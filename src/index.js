@@ -3,6 +3,15 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import {Route, createBrowserRouter, createRoutesFormElement } from 'react-router-dom';
+
+const router = createRoutesFormElement(
+  createRoutesFormElement(
+    <Route path="/sdsd">
+      
+    </Route>
+  )
+)
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
