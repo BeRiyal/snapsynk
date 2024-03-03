@@ -1,5 +1,4 @@
 import React from "react";
-import {Card, CardBody, CardFooter, CardHeader} from "@material-tailwind/react"
 
 const Project = () => {
     return(
