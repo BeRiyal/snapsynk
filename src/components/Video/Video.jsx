@@ -4,6 +4,8 @@ import ReactPlayer from "react-player";
 import Chatbox from "../Chatbox/Chatbox";
 import Commenttool from "../Chatbox/Commenttool";
 import { useLocation, useParams } from "react-router-dom";
+import { Button, Input } from "@material-tailwind/react";
+import useMutation from "../../hooks/useMutation";
 
 const Video = (props) => {
   let { id } = useParams();
@@ -25,7 +27,7 @@ const Video = (props) => {
     setPlaying(! playing)
     console.log("tsssssssss from state",playing);
   }
-  
+
   const [chat,SetReview] = useState(
     [{
       id:"as",
@@ -42,11 +44,48 @@ const Video = (props) => {
   let videoComponent = null;
 
   console.log("vid",id)
+
+
+//video handling 
+
+  const [selectedFile, setSelectedFile] = useState(null);
+  const URL = "/api/projects/uploadvideo"
+  const {mutate:uploadImage,isLoading:uploading,error:uploadError} = useMutation({url:URL });
+
+  const handleFileChange = (event) => {
+    // Access the file from event.target.files
+    const file = event.target.files[0];
+    setSelectedFile(file);
+  };
+
+  const handleUpload = async e => {
+    // Handle uploading the selected file
+    if (selectedFile) {
+      
+      const formData = new FormData();
+      formData.append('projectId', "65d59292e924c821263bb090"); // Add project ID to the FormData
+
+      formData.append('image', selectedFile);
+     
+
+      await uploadImage(formData);
+
+      console.log("File uploaded:", selectedFile);
+    } else {
+      console.log("No file selected");
+    }
+  };
+
   if (typeof id !== 'undefined') {
     videoComponent =  (
       <div>
-        <input type="file" accept=".mp4"/>
-      </div>)
+         <input type="file" onChange={handleFileChange} />
+      <button onClick={handleUpload}>Upload</button>
+
+        <div>Post</div>
+      </div>
+      
+      )
     console.log("Video ID is undefined");
   }  
   else {

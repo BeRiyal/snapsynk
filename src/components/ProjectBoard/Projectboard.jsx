@@ -3,10 +3,6 @@ import React, { useEffect, useState } from 'react'
 import { Outlet,Link, useLocation, useNavigate, Navigate, useParams } from 'react-router-dom'
 
 const Projectboard = () => {
-    
-    const [formData, setFormData] = useState({
-        id: '',
-    });
 
     const [data, setData] = useState({
         videoId: '',
@@ -67,19 +63,20 @@ const Projectboard = () => {
 
 
     useEffect( () => {
-        setFormData({
-            id:id
-        })
+        console.log("Project id",id)
+       
         if(! id){
            navigate("/home");
          }
          else{
-
-             axios.get('/api/projects/project',formData)
+            
+            
+            axios.get(`/api/projects/projectById/${id}`)
              .then( async (response) => {
+                console.log(response);
                  setData(prevState => ({
                         ...prevState,
-                        videoId:response.videoId
+                        videoId:response.data.data.videoId
                         
                     }));
                 })
