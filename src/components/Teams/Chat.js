@@ -1,20 +1,38 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { CSVLink } from 'react-csv';
+import avatar from "../../Assets/avatar.jpeg"
+import axios from 'axios';
+import { useParams } from 'react-router-dom';
 
-const initialMessages = [
-  { text: 'Hello!', timestamp: '10:00 AM', user: 'Alice', userType: 'Editor' },
-  { text: 'How are you?', timestamp: '10:05 AM', user: 'Bob', userType: 'Admin' },
-  { text: 'I\'m doing well, thanks! How about you?', timestamp: '10:10 AM', user: 'Charlie', userType: 'Client' },
-  { text: 'I\'m good too, thanks for asking!', timestamp: '10:15 AM', user: 'Alice', userType: 'Editor' },
-  { text: 'That\'s great!', timestamp: '10:20 AM', user: 'Bob', userType: 'Admin' },
-];
+
 
 const Chat = () => {
-  const [messages, setMessages] = useState(initialMessages);
   const [inputMessage, setInputMessage] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [showScrollButton, setShowScrollButton] = useState(false);
   const chatEndRef = useRef(null);
+
+  const [messages, setMessages] = useState([]);
+  const [messagePost, setMessagePost] = useState()
+  let { id } = useParams();
+
+useEffect(() => {
+  const fetchMessages = async () => {
+    try {
+      const response = await axios.get('/api/chats/messages', {
+        params: {
+          projectId: id,
+          userId: localStorage.getItem("UserId")
+        }
+      });
+      setMessages(response.data);
+      console.log("response",response)
+    } catch (error) {
+      console.error('Error fetching messages:', error);
+    }
+  };
+  fetchMessages();
+}, []);
 
   const scrollToBottom = () => {
     chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -24,9 +42,21 @@ const Chat = () => {
     scrollToBottom();
   }, [messages]);
 
+
   const handleMessageChange = (event) => {
     setInputMessage(event.target.value);
   };
+
+  function postMessage(newMessage){
+    console.log("loggggggggggggggggggg",newMessage)
+    axios.post("../../api/chats/AddMessages",newMessage)
+        .then((response)=>{
+          console.log("hii",response);
+        })
+        .catch((error)=>{
+          console.log("error ->",error)
+        })
+  }
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -39,6 +69,11 @@ const Chat = () => {
       };
       setMessages((prevMessages) => [...prevMessages, newMessage]);
       setInputMessage('');
+      postMessage({
+        projectId:id,
+        userId:localStorage.getItem("UserId"),
+        text:inputMessage.trim()
+      })
     }
   };
 
@@ -47,13 +82,13 @@ const Chat = () => {
   };
 
   const filteredMessages = messages.filter((message) =>
-    message.text.toLowerCase().includes(searchQuery.toLowerCase())
+    message.Text.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const csvData = messages.map((message) => ({
-    Time: message.timestamp,
-    User: message.user,
-    Message: message.text,
+    Time: message.Time,
+    User: message.UserId.Name,
+    Message: message.Text,
   }));
 
   const handleScroll = () => {
@@ -69,8 +104,8 @@ const Chat = () => {
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen flex flex-col relative">
-      <div className="bg-white p-4 flex justify-between items-center shadow-md fixed w-full top-0">
+    <div className="bg-gray-100 min-h-screen flex flex-col">
+      <div className="bg-white p-4 flex justify-between items-center shadow-md w-full ">
         <input
           type="text"
           placeholder="Search in chat..."
@@ -85,10 +120,13 @@ const Chat = () => {
       <div className="overflow-y-auto p-4 flex flex-col" onScroll={handleScroll}>
         {filteredMessages.map((message, index) => (
           <div key={index} className={`mb-2 ${message.user === 'You' ? 'ml-auto' : 'mr-auto'}`}>
-            <div className={`rounded-lg ${message.user === 'You' ? 'bg-blue-300' : message.userType === 'Editor' ? 'bg-gray-300' : message.userType === 'Admin' ? 'bg-green-300' : 'bg-gray-300'} p-2 max-w-xs break-words`}>
-              <p className="text-sm">{message.text}</p>
+            <div className={'flex ' + (message.user === 'You' ? 'flex-row-reverse' : '')}>
+              <img className="rounded-full  m-2 h-[45px] " src={avatar}/>
+              <div className={`rounded-lg ${message.user === 'You' ? 'bg-blue-100' : message.userType === 'Editor' ? 'bg-gray-200' : message.userType === 'Admin' ? 'bg-green-200' : 'bg-gray-300'} p-2 max-w-xs break-words ${message.user === 'You' ? 'text-right' : 'text-left'}`}>
+                <p className="font-semibold">{message.Text}</p>
+                <span className='text-gray-500 text-xs'>{message.Time.substring(0,4)}</span>
+              </div>
             </div>
-            <span className={`text-gray-500 text-xs ${message.user === 'You' ? 'text-right' : 'text-left'}`}>{message.timestamp}</span>
           </div>
         ))}
         <div ref={chatEndRef}></div>
@@ -121,5 +159,6 @@ const Chat = () => {
     </div>
   );
 };
+
 
 export default Chat;

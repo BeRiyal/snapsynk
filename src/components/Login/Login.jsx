@@ -23,6 +23,8 @@ const Login = () => {
       .then((user)=>{
         console.log(user);
             localStorage.setItem('isSession', true);
+            localStorage.setItem('UserId', user.data.data.token);
+            console.log(localStorage.getItem("UserId"))
             navigate("/");
       })
       .catch(error=>{

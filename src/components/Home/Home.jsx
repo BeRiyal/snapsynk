@@ -25,6 +25,7 @@ const Home = () => {
    
   return (
     <>
+        <h1 className='m-3 ml-10 text-3xl font-bold'>Projects</h1>
       <div className='grid grid-cols-3 gap-3'>
         {projects.map((project) => (
           <div key={project._id}>

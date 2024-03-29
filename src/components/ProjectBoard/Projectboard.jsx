@@ -5,6 +5,7 @@ import { Outlet,Link, useLocation, useNavigate, Navigate, useParams } from 'reac
 const Projectboard = () => {
 
     const [data, setData] = useState({
+        projectTitle:'',
         videoId: '',
         moodBoardId: '',
         voId: '',
@@ -25,11 +26,11 @@ const Projectboard = () => {
         switch (type) {
             case 'video':
                 console.log("Video Id:", data.videoId);
-                navigate(`../project/Video/${data.videoId}`);
+                navigate(`../project/Video/?pid=${id}&vid=${data.videoId}`);
                 break;
             case 'moodboard':
                 console.log("Mood Board Id:", data.moodBoardId);
-                navigate(`../project/MoodBoard/${data.moodBoardId}`);
+                navigate(`../project/MoodBoard/${id}`);
                 break;
             case 'voiceover':
                 console.log("Voice Over Id:", data.voId);
@@ -41,7 +42,7 @@ const Projectboard = () => {
                 break;
             case 'teams':
                 console.log("Teams Id:", data.teams);
-                navigate(`../project/Teams/${data.teams}`);
+                navigate(`../project/Teams/${id}`);
                 break;
             case 'socsed':
                 console.log("Social Schedules Id:", data.SocSed);
@@ -76,8 +77,8 @@ const Projectboard = () => {
                 console.log(response);
                  setData(prevState => ({
                         ...prevState,
-                        videoId:response.data.data.videoId
-                        
+                        videoId:response.data.data.videoId,
+                        projectTitle:response.data.data.projectTitle,
                     }));
                 })
                 .catch((error) => {
@@ -90,8 +91,7 @@ const Projectboard = () => {
   return (
     <>
         <div>
-            <h1 className='px-3 text-2xl font-bold'>
-            </h1>
+        <h1 className='m-3 ml-10 text-3xl font-bold'>Project Board : {data.projectTitle}</h1>
         </div>
     <div className='grid grid-cols-12 gap-4 m-3'>
         <div onClick={() => handleClick('video')} className='col-span-3 m-3 p-3 card bg-white rounded shadow flex flex-col justify-between'>

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import '../../index.css';
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../Assets/Logo_SnapSynk.png"
+import avatar from "../../Assets/avatar.jpeg"
 
 function Navbar(){
 
@@ -46,7 +47,7 @@ function Navbar(){
           </nav>
           
           <div className="flex items-center">
-            <img src="path/to/image.jpg" />
+          <img className="rounded-full  m-2 h-[30px] " src={avatar}/>
             <div>
               <strong className="block">
                 {localStorage.getItem("UserName")}

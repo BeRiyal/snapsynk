@@ -1,56 +1,84 @@
 import { Checkbox, Input } from '@material-tailwind/react'
 import React, { useState } from 'react'
+import avatar from '../../Assets/avatar.jpeg';
+import axios from 'axios';
 
-const Commenttool = ({addReviewFunction,setPlaying}) => {
+const Commenttool = ({addReviewFunction, setPlaying,TimeStamp,pid}) => {
+
     let [Message, setMessage] = useState();
-    const [timeStamp, settimeStamp] = useState();
-
-    let [comments,setComment] = useState([])
+    let [timeStamp,setTimeStamp] = useState();
 
     const handleChange = (e) =>{
         setMessage(e.target.value)
+        setTimeStamp(String(TimeStamp).substring(0,4))
         console.log(Message)        
     }
 
     const handleFocus = (e) => {
-        // if (e.target === document.activeElement) {
             setPlaying(true)
-        // } 
+    }
+
+    function getCurrentTime(){
+        const now = new Date();
+        const hours = now.getHours().toString().padStart(2, '0'); // Get hours and pad with leading zero if necessary
+        const minutes = now.getMinutes().toString().padStart(2, '0'); // Get minutes and pad with leading zero if necessary
+        return `${hours}:${minutes}`;
     }
     
     const handleClick = async(e) =>{
         e.preventDefault();
         setPlaying(true)
         const newobj=({
-            id:"",
-                Message:Message,
-                msgTime:"",
-                timeStamp:"getTimeStamp",
-                userName:"",
-                status:"",
-                replyOf:""
+                projectId:pid,
+                message:Message,
+                msgTime:getCurrentTime(),
+                timeStamp:timeStamp,
+                userName:localStorage.getItem("UserId"),
+                status:"pending",
         })
         addReviewFunction(newobj)
+        console.log("new obj",newobj)
+        axios.post("../../api/reviews/add",newobj)
+        .then((response)=>{
+          console.log("hii",response);
+        })
+        .catch((error)=>{
+          console.log("error ->",error)
+        })
     }
     
-    return(
-        <div className='grid grid-rows-4 w-full'>
-            <form onSubmit={handleClick}>
-            <div className='grid-rows-1 flex flex-row'>
-                <img src="user.jpg" className='m-2' />
-                <input onChange={handleChange} onClick={handleFocus} className='bg-gray-100 width text-sm rounded-lg focus:ring-blue-500 block w-full ps-10 p-2.5' />
-            </div>
-            <div className='grid-rows-1 flex flex-row justify-between'>
-                <div className='bg-gray-100 p-1 rounded-lg'>
-                    <Checkbox className='w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600'/>
-                    <label className='p-3 text-blue-600'>00:00</label>
-                </div>
-                <button type='submit'  className='text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'> Send </button>
-            </div>
-            </form>
-                
-        </div>
-    )
+    return (
+      <div className="grid grid-rows-4 w-full">
+        <form onSubmit={handleClick}>
+          <div className="grid-rows-1 flex flex-row">
+          <img className="rounded-full  m-2 h-[50px] " src={avatar}/>
+            <input
+              onChange={handleChange}
+              onBlur={handleFocus}
+              onFocus={handleFocus}
+              className="border-b bg-transparent border-gray-300 focus:outline-none focus:border-blue-500 transition duration-300 w-full text-xl font-medium"
+            />
+          </div>
+          <div className="grid-rows-1 flex flex-row justify-between">
+            <span className="px-2">
+              <label className="inline-flex items-center mt-3">
+                <input
+                  type="checkbox"
+                  className="form-checkbox h-5 w-5 text-blue-500" 
+                />
+                <span className="m-2 text-indigo-700 font-semibold rounded-lg">{String(TimeStamp).substring(0,4)}</span>
+              </label>
+            </span>
+            <button
+              type="submit"
+              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-lg px-5  text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            >
+              Send
+            </button>
+          </div>
+        </form>
+      </div>
+    );
 }
 
 export default Commenttool

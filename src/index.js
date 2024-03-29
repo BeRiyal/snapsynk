@@ -45,11 +45,11 @@ const router = createBrowserRouter(
     <Route path='' element={<Home />} />
     
     <Route path='Project/:id' element={<ProjectBoard/>} />
-    <Route path='Project/Video/:id' element={<Video/>} />
-    <Route path='Project/Moodboard' element={<MoodBoard />} />
+    <Route path='Project/Video' element={<Video/>} />
+    <Route path='Project/Moodboard/:id' element={<MoodBoard />} />
     <Route path='Project/Voiceover' element={<h1>VoiceOver</h1>} />
     <Route path='Project/Script' element={<PDFViewer />} />
-    <Route path='Project/Teams' element={<Chat />} />
+    <Route path='Project/Teams/:id' element={<Chat />} />
     <Route path='Project/Socialsedules' element={<h1>Social Sedules</h1>} />
     <Route path='Project/Deadlines' element={<h1>Deadlines</h1>} />
     <Route path='Project/Otherdocs' element={<Docs />} />
