@@ -12,7 +12,18 @@ const Chat = () => {
   const [showScrollButton, setShowScrollButton] = useState(false);
   const chatEndRef = useRef(null);
 
-  const [messages, setMessages] = useState([]);
+ // const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState([
+    {
+      Text: String,
+      Time: String,
+      UserId:  {
+        name: String,
+        type: String
+      },
+      projectId: String
+    }
+  ])
   const [messagePost, setMessagePost] = useState()
   let { id } = useParams();
 
@@ -25,12 +36,14 @@ useEffect(() => {
           userId: localStorage.getItem("UserId")
         }
       });
+
       setMessages(response.data);
       console.log("response",response)
     } catch (error) {
       console.error('Error fetching messages:', error);
     }
   };
+
   fetchMessages();
 }, []);
 
@@ -48,13 +61,15 @@ useEffect(() => {
   };
 
   function postMessage(newMessage){
-    console.log("loggggggggggggggggggg",newMessage)
+    console.log("New message data",newMessage)
     axios.post("../../api/chats/AddMessages",newMessage)
         .then((response)=>{
-          console.log("hii",response);
+          console.log("Chat post response data",response);
+          // Assuming the response contains the newly added message data
+          setMessages((prevMessages) => [...prevMessages, response.data]);
         })
         .catch((error)=>{
-          console.log("error ->",error)
+          console.log("error of post message api call",error)
         })
   }
 
@@ -74,6 +89,7 @@ useEffect(() => {
         userId:localStorage.getItem("UserId"),
         text:inputMessage.trim()
       })
+      
     }
   };
 
@@ -81,13 +97,23 @@ useEffect(() => {
     setSearchQuery(event.target.value);
   };
 
-  const filteredMessages = messages.filter((message) =>
-    message.Text.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredMessages = messages.filter((message) => {
+    console.log("Message:", message); // Log the message to inspect its structure
+    console.log("Text:", message.Text); // Log the Text property to see if it's defined
+    console.log("Time:", message.Time); // Log the Time property to see if it's defined
+  
+    // Filter logic
+    return (
+      message.Text &&
+      message.Time &&
+      message.Text.toString().toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  });
+  
 
   const csvData = messages.map((message) => ({
     Time: message.Time,
-    User: message.UserId.Name,
+    User: message.UserId?.name, // Use optional chaining to safely access the name property
     Message: message.Text,
   }));
 
@@ -124,7 +150,7 @@ useEffect(() => {
               <img className="rounded-full  m-2 h-[45px] " src={avatar}/>
               <div className={`rounded-lg ${message.user === 'You' ? 'bg-blue-100' : message.userType === 'Editor' ? 'bg-gray-200' : message.userType === 'Admin' ? 'bg-green-200' : 'bg-gray-300'} p-2 max-w-xs break-words ${message.user === 'You' ? 'text-right' : 'text-left'}`}>
                 <p className="font-semibold">{message.Text}</p>
-                <span className='text-gray-500 text-xs'>{message.Time.substring(0,4)}</span>
+                <span className='text-gray-500 text-xs'>{message.Time.toString().substring(0,4)}</span>
               </div>
             </div>
           </div>

@@ -75,7 +75,7 @@ const handleUpload = async e => {
           if (response.status === 200) {
             console.log("presignedUrl", response.data.data);
             const videoUrlFromRes = response.data.data;
-            setVideoUrl(videoUrlFromRes[videoUrlFromRes.length - 1]);
+            setVideoUrl(videoUrlFromRes[0]);
             fetchReviews(pid)
           } else {
             console.error("Error fetching video:", response.data.message);
