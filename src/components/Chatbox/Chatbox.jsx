@@ -5,6 +5,7 @@ import avatar from '../../Assets/avatar.jpeg';
 const Chatbox = (props) => {
     console.log(props.obj);
     function handleReviewClick(timeStamp){
+      props.setPlayed(timeStamp)
     }
   const dateString = "2024-03-27T12:00:00";
   const date = new Date(dateString);

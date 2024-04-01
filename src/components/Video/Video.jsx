@@ -16,6 +16,7 @@ const Video = (props) => {
   const pid = searchParams.get("pid");
 
 
+  const [played,setPlayed] = useState("00")
   const [playing, setPlaying] = useState(true);
   const [timeStamp, settimeStamp] = useState();
   const [videoUrl, setVideoUrl] = useState(null); // State to store video URL
@@ -27,7 +28,6 @@ const URL = "/api/projects/uploadvideo"
 
 const handleReviewClick = (tt) => {
   console.log("usereff",tt)
-
 }
 const {mutate:uploadImage,isLoading:uploading,error:uploadError,responseData:responseDataValue} = useMutation({url:URL ,method:"PUT"});
 
@@ -40,25 +40,23 @@ const handleFileChange = (event) => {
 const handleUpload = async e => {
   // Handle uploading the selected file
   if (selectedFile) {
-    
     const formData = new FormData();
     formData.append('projectId',pid); // Add project ID to the FormData
     formData.append('image', selectedFile);
     await uploadImage(formData, pid); // Pass id as projectId
-
-
-  } else {
+  }
+  else {
     console.log("No file selected");
   }
 };
 
   let videoComponent = null;
- function fetchReviews(pid){
-  console.log("Project",pid);
-  axios.get(`../../api/reviews/getReview?projectId=${pid}`).then(function(response){
-    SetReview(response.data.data)
-  });
- }
+  function fetchReviews(pid){
+    console.log("Project",pid);
+    axios.get(`../../api/reviews/getReview?projectId=${pid}`).then(function(response){
+      SetReview(response.data.data)
+    });
+  }
  
   useEffect(() => {
     async function fetchVideo() {
@@ -71,15 +69,17 @@ const handleUpload = async e => {
               "x-project2-id": pid,
             },
           });
-  
+
           if (response.status === 200) {
             console.log("presignedUrl", response.data.data);
             const videoUrlFromRes = response.data.data;
             setVideoUrl(videoUrlFromRes[0]);
             fetchReviews(pid)
-          } else {
+          }
+          else {
             console.error("Error fetching video:", response.data.message);
           }
+
         }
       } catch (error) {
         console.error("Error fetching video:", error);
@@ -98,7 +98,6 @@ const handleUpload = async e => {
       ...chat,
       data
     ])
-    console.log(chat)
   }
 
   function setPlayingx(ts){
@@ -108,9 +107,23 @@ const handleUpload = async e => {
 
   const handleProgress = (progress) => {
     const { played } = progress;
-    settimeStamp(played);
-    
+    console.log("Playeddddddddddd",played)
+    setPlayed(String(played));
   }
+  console.log("sorted array",chat)
+  console.log("sorted array",SortChat(chat))
+
+  function SortChat(chat){
+    return chat.slice().sort((a, b) => {
+        if (a.timeStamp && !b.timeStamp) {
+            return 1;
+        } else if (!a.timeStamp && b.timeStamp) {
+            return -1;
+        } else {
+            return 0;
+        }
+    });
+}
 
   if (vid === 'undefined') {
     videoComponent =  (
@@ -118,14 +131,12 @@ const handleUpload = async e => {
         <input type="file" onChange={handleFileChange} />
         <button onClick={handleUpload}>Upload</button>
         <div>Post</div>
-       
       </div>
       
       )
       
   }  
   else {
-    
     videoComponent = 
     (
       <ReactPlayer 
@@ -134,6 +145,7 @@ const handleUpload = async e => {
       key={videoUrl}
       onProgress={handleProgress}
       controls 
+      currentTime={played}
       stopOnUnmount={false}
       />
     )
@@ -149,7 +161,7 @@ const handleUpload = async e => {
           }
             {videoComponent}
   
-            <Commenttool addReviewFunction={addReview} setPlaying={setPlayingx} TimeStamp={timeStamp} pid={pid} />
+            <Commenttool addReviewFunction={addReview} setPlaying={setPlayingx} TimeStamp={played} pid={pid} />
         </div>
         <div className="col-span-4 m-3 p-3 border ">
         <div>
@@ -162,8 +174,8 @@ const handleUpload = async e => {
             </span>
         </div>
         <hr />
-          {chat.map((obj)=>(
-            <Chatbox key={obj.id} obj={obj}   />
+          {SortChat(chat).map((obj)=>(
+            <Chatbox key={obj.id} obj={obj} setPlayed={setPlayed}   />
           ))}
         </div>
         

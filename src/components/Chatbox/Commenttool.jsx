@@ -7,10 +7,16 @@ const Commenttool = ({addReviewFunction, setPlaying,TimeStamp,pid}) => {
 
     let [Message, setMessage] = useState();
     let [timeStamp,setTimeStamp] = useState();
+    let [ifChecked, setCheckbox] = useState();
 
+    function handelCheckbox(e){
+      setCheckbox(e.target.checked);
+      console.log("hiiiiiiiiiiiiiii",e.target.checked)
+    }
     const handleChange = (e) =>{
         setMessage(e.target.value)
-        setTimeStamp(String(TimeStamp).substring(0,4))
+        if(ifChecked){setTimeStamp(String(TimeStamp).substring(0,4))}
+        else{setTimeStamp("")}
         console.log(Message)        
     }
 
@@ -56,6 +62,7 @@ const Commenttool = ({addReviewFunction, setPlaying,TimeStamp,pid}) => {
               onChange={handleChange}
               onBlur={handleFocus}
               onFocus={handleFocus}
+              placeholder='Add Your Review'
               className="border-b bg-transparent border-gray-300 focus:outline-none focus:border-blue-500 transition duration-300 w-full text-xl font-medium"
             />
           </div>
@@ -63,10 +70,11 @@ const Commenttool = ({addReviewFunction, setPlaying,TimeStamp,pid}) => {
             <span className="px-2">
               <label className="inline-flex items-center mt-3">
                 <input
+                  onChange={handelCheckbox}
                   type="checkbox"
                   className="form-checkbox h-5 w-5 text-blue-500" 
                 />
-                <span className="m-2 text-indigo-700 font-semibold rounded-lg">{String(TimeStamp).substring(0,4)}</span>
+                <span className="m-2 text-indigo-700 font-semibold rounded-lg">{TimeStamp.substring(0,4)}</span>
               </label>
             </span>
             <button

@@ -1,6 +1,6 @@
 
 
-// TODO: Validation on submit and Setting type 
+// TODO: Validation on submit and Setting type
 
 
 
@@ -125,10 +125,6 @@ const Register = () => {
   const [inputValue, setInputValue] = useState("");
   const [suggestions, setSuggestions] = useState([]);
 
-  // Function to handle input change
-  const handleChange = (event) => {
-    setInputValue(event.target.value);
-  };
 
   // Function to handle input focus
   const handleFocus = () => {

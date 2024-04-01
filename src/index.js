@@ -15,7 +15,7 @@ import MoodBoard from './components/MoodBoard/MoodBoard.jsx';
 import PDFViewer from './components/PDFViewer/PDFViewer.js';
 import Chat from './components/Teams/Chat.js';
 import Docs from './components/Docs/Docs.js';
-
+import ContactForm from './components/Contact/ContactForm.jsx';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 // route for navigation simulation
@@ -56,6 +56,7 @@ const router = createBrowserRouter(
     <Route path='Login' element={<Login />} />
     <Route path='Register' element={<Register />} />
     <Route path='AddProject' element={<AddProject />} />
+    <Route path='Contact' element={<ContactForm />} />
     </Route>
   )
 )

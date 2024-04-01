@@ -4,6 +4,9 @@ import { Outlet,Link, useLocation, useNavigate, Navigate, useParams } from 'reac
 
 const Projectboard = () => {
 
+    if(! localStorage.getItem("isSession")){
+        navigate("/Login");
+    }
     const [data, setData] = useState({
         projectTitle:'',
         videoId: '',
@@ -21,7 +24,11 @@ const Projectboard = () => {
     const location = useLocation();
 
     const navigate = useNavigate();
-
+    function toCamelCase(str) {
+        return str.replace(/\w\S*/g, function(txt){
+          return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+        });
+      }
     function handleClick(type) {
         switch (type) {
             case 'video':
@@ -90,28 +97,42 @@ const Projectboard = () => {
 
   return (
     <>
-        <div>
-        <h1 className='m-3 ml-10 text-3xl font-bold'>Project Board : {data.projectTitle}</h1>
-        </div>
-    <div className='grid grid-cols-12 gap-4 m-3'>
-        <div onClick={() => handleClick('video')} className='col-span-3 m-3 p-3 card bg-white rounded shadow flex flex-col justify-between'>
-            <img src='abc.jpg' />
-            <span className=''>
-                Video Review
-            </span>
-        </div>
-        <div className='col-span-9'>
-            <div className='grid grid-cols-3 gap-3'>
-                <div onClick={() => handleClick('moodboard')} className='m-3 p-3 card bg-white rounded shadow flex flex-row'>Moodboard</div>
-                <div onClick={() => handleClick('voiceover')} className='m-3 p-3 card bg-white rounded shadow'>Voice Over</div>
-                <div onClick={() => handleClick('script')} className='m-3 p-3 card bg-white rounded shadow'>Script</div>
-                <div onClick={() => handleClick('teams')} className='m-3 p-3 card bg-white rounded shadow'>Teams</div>
-                <div onClick={() => handleClick('socsed')} className='m-3 p-3 card bg-white rounded shadow'>Social Sedules</div>
-                <div onClick={() => handleClick('cal')} className='m-3 p-3 card bg-white rounded shadow'>Deadlines</div>
-                <div onClick={() => handleClick('docs')} className='m-3 p-3 card bg-white rounded shadow'>Other Docs</div>
-            </div>
-        </div>
-    </div>
+
+<div>
+  <h1 className='m-3 ml-5 text-3xl font-bold'>Project Board : {toCamelCase(data.projectTitle)}</h1>
+  <hr />
+</div>
+<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 m-3'>
+<div onClick={() => handleClick('video')} className='m-3 p-16 card bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg shadow-xl relative'>
+    <span className='text-white font-bold text-xl absolute bottom-5 right-5'>Video Review</span>
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white absolute top-5 left-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+    </svg>
+  </div>
+  <div onClick={() => handleClick('moodboard')} className='m-3 p-16 card bg-gradient-to-br from-green-400 to-green-600 rounded-lg shadow-xl relative'>
+    <span className='text-white font-bold text-xl absolute bottom-5 right-5'>Moodboard</span>
+  </div>
+  <div onClick={() => handleClick('voiceover')} className='m-3 p-16 card bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-lg shadow-xl relative'>
+    <span className='text-white font-bold text-xl absolute bottom-5 right-5'>Voice Over</span>
+  </div>
+  <div onClick={() => handleClick('script')} className='m-3 p-16 card bg-gradient-to-br from-purple-400 to-purple-600 rounded-lg shadow-xl relative'>
+    <span className='text-white font-bold text-xl absolute bottom-5 right-5'>Script</span>
+  </div>
+  <div onClick={() => handleClick('teams')} className='m-3 p-16 card bg-gradient-to-br from-red-400 to-red-600 rounded-lg shadow-xl relative'>
+    <span className='text-white font-bold text-xl absolute bottom-5 right-5'>Teams</span>
+  </div>
+  <div onClick={() => handleClick('socsed')} className='m-3 p-16 card bg-gradient-to-br from-pink-400 to-pink-600 rounded-lg shadow-xl relative'>
+    <span className='text-white font-bold text-xl absolute bottom-5 right-5'>Social Sedules</span>
+  </div>
+  <div onClick={() => handleClick('cal')} className='m-3 p-16 card bg-gradient-to-br from-indigo-400 to-indigo-600 rounded-lg shadow-xl relative'>
+    <span className='text-white font-bold text-xl absolute bottom-5 right-5'>Deadlines</span>
+  </div>
+  <div onClick={() => handleClick('docs')} className='m-3 p-16 card bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg shadow-xl relative'>
+    <span className='text-white font-bold text-xl absolute bottom-5 right-5'>Other Docs</span>
+  </div>
+</div>
+
+
     <Outlet />
     </>
   )

@@ -12,7 +12,7 @@ const Home = () => {
     if(! localStorage.getItem("isSession")){
       navigate("/Login");
     }
-    axios.get('/api/projects')
+    axios.get(`/api/projects/projbyEmail/${localStorage.getItem("UserEmail")}`)
       .then( async (response) => {
         console.log(response.data.data)
         setProjects(response.data.data)
@@ -25,7 +25,8 @@ const Home = () => {
    
   return (
     <>
-        <h1 className='m-3 ml-10 text-3xl font-bold'>Projects</h1>
+        <h1 className='m-2 ml-5 text-xl font-bold'>Projects</h1>
+        <hr />
       <div className='grid grid-cols-3 gap-3'>
         {projects.map((project) => (
           <div key={project._id}>
