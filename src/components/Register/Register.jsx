@@ -1,8 +1,4 @@
-
-
 // TODO: Validation on submit and Setting type
-
-
 
 import React, { useState } from "react";
 import axios from "axios";
@@ -16,12 +12,11 @@ const Register = () => {
     Type: "",
   });
   const [error, setError] = useState({}); // Define error state
-  
+
   const [passwordVisible, setPasswordVisible] = useState(false);
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
-
 
   // Function to validate mobile number
   const validateMobile = (value) => {
@@ -71,7 +66,11 @@ const Register = () => {
         const passwordRegex =
           /^(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
         if (!passwordRegex.test(value)) {
-          setError({ ...error, [name]: "Password must be at least 8 characters long and include at least one capital letter, one number, and one special character." });
+          setError({
+            ...error,
+            [name]:
+              "Password must be at least 8 characters long and include at least one capital letter, one number, and one special character.",
+          });
           return false;
         }
         break;
@@ -95,9 +94,9 @@ const Register = () => {
         }
         break;
       default:
-          // If no error is found, clear the error
-          setError({ ...error, [name]: "" });
-          return true; // Return true to indicate no error
+        // If no error is found, clear the error
+        setError({ ...error, [name]: "" });
+        return true; // Return true to indicate no error
     }
     // If no error is found, return true
     setError({ ...error, [name]: "" }); // Clear error
@@ -107,11 +106,9 @@ const Register = () => {
   const handleRegInput = (e) => {
     const name = e.target.name;
     const value = e.target.value;
-    if(name === "Confirmpassword"){
-      validateField(name, value)
-    }
-    else{
-
+    if (name === "Confirmpassword") {
+      validateField(name, value);
+    } else {
       if (validateField(name, value)) {
         setRegister({
           ...register,
@@ -124,7 +121,6 @@ const Register = () => {
   const navigate = useNavigate();
   const [inputValue, setInputValue] = useState("");
   const [suggestions, setSuggestions] = useState([]);
-
 
   // Function to handle input focus
   const handleFocus = () => {
@@ -148,26 +144,26 @@ const Register = () => {
     e.preventDefault();
     let isValid = false; // Corrected variable name
     for (const name in register) {
-        const value = register[name];
-        validateField(name, value)
-        isValid = validateField(name, value);
-      }
-    
-    if(isValid){
-    await setType(); // Wait for setType to complete before proceeding
-    axios
-      .post("api/users/add", register)
-      .then(function (response) {
-        //handle success
-        navigate("/login");
-      })
-      .catch(function (response) {
-        if(response.response.status===440){
-          setError({ ...error, "Email": "opps!! Email Already Used" });
-        }
-        //handle error
-        console.log("failed", response);
-      });
+      const value = register[name];
+      validateField(name, value);
+      isValid = validateField(name, value);
+    }
+
+    if (isValid) {
+      await setType(); // Wait for setType to complete before proceeding
+      axios
+        .post("api/users/add", register)
+        .then(function (response) {
+          //handle success
+          navigate("/login");
+        })
+        .catch(function (response) {
+          if (response.response.status === 440) {
+            setError({ ...error, Email: "opps!! Email Already Used" });
+          }
+          //handle error
+          console.log("failed", response);
+        });
     }
   };
 
@@ -249,81 +245,81 @@ const Register = () => {
           )}
         </div>
         <div className="mb-4">
-      <label
-        htmlFor="password"
-        className="block text-sm font-medium text-gray-700"
-      >
-        Password
-      </label>
-      <div className="relative">
-        <input
-          onChange={handleRegInput}
-          value={register.password}
-          type={passwordVisible ? "text" : "password"}
-          id="password"
-          name="Password"
-          className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:border-blue-500"
-        />
-        <button
-          type="button"
-          className="absolute inset-y-0 right-0 px-3 py-2"
-          onClick={togglePasswordVisibility}
-        >
-          {passwordVisible ? (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 text-gray-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+          <label
+            htmlFor="password"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Password
+          </label>
+          <div className="relative">
+            <input
+              onChange={handleRegInput}
+              value={register.password}
+              type={passwordVisible ? "text" : "password"}
+              id="password"
+              name="Password"
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:border-blue-500"
+            />
+            <button
+              type="button"
+              className="absolute inset-y-0 right-0 px-3 py-2"
+              onClick={togglePasswordVisibility}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-              />
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4 12a8 8 0 018-8m0 16a8 8 0 01-8-8"
-              />
-            </svg>
-          ) : (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 text-gray-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-              />
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-              />
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4 12a8 8 0 018-8m0 16a8 8 0 01-8-8"
-              />
-            </svg>
+              {passwordVisible ? (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6 text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M4 12a8 8 0 018-8m0 16a8 8 0 01-8-8"
+                  />
+                </svg>
+              ) : (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6 text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M4 12a8 8 0 018-8m0 16a8 8 0 01-8-8"
+                  />
+                </svg>
+              )}
+            </button>
+          </div>
+          {error.hasOwnProperty("Password") && (
+            <div style={{ color: "red" }}>{error["Password"]}</div>
           )}
-        </button>
-      </div>
-      {error.hasOwnProperty("Password") && (
-        <div style={{ color: "red" }}>{error["Password"]}</div>
-      )}
-    </div>
+        </div>
         <div className="mb-4">
           <label
             htmlFor="confirmPassword"
@@ -332,7 +328,7 @@ const Register = () => {
             Confirm Password
           </label>
           <input
-          onChange={handleRegInput}
+            onChange={handleRegInput}
             value={register.confirmpassword}
             type="password"
             id="confirmpassword"

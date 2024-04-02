@@ -1,92 +1,100 @@
-import { Checkbox, Input } from '@material-tailwind/react'
-import React, { useState } from 'react'
-import avatar from '../../Assets/avatar.jpeg';
-import axios from 'axios';
+import axios from "axios";
+import React, { useState } from "react";
+import avatar from "../../Assets/avatar.jpeg";
 
-const Commenttool = ({addReviewFunction, setPlaying,TimeStamp,pid}) => {
+const Commenttool = ({ addReviewFunction, setPlaying, TimeStamp, pid }) => {
+  console.log(
+    `🚀  ~ file: Commenttool.jsx:6 ~ Commenttool ~ TimeStamp:`,
+    TimeStamp
+  );
+  let [Message, setMessage] = useState();
 
-    let [Message, setMessage] = useState();
-    let [timeStamp,setTimeStamp] = useState();
-    let [ifChecked, setCheckbox] = useState();
+  let [timeStamp, setTimeStamp] = useState();
+  let [ifChecked, setCheckbox] = useState();
 
-    function handelCheckbox(e){
-      setCheckbox(e.target.checked);
-      console.log("hiiiiiiiiiiiiiii",e.target.checked)
+  function handelCheckbox(e) {
+    setCheckbox(e.target.checked);
+  }
+  const handleChange = (e) => {
+    setMessage(e.target.value);
+    if (ifChecked) {
+      setTimeStamp(String(TimeStamp).substring(0, 4));
+    } else {
+      setTimeStamp("");
     }
-    const handleChange = (e) =>{
-        setMessage(e.target.value)
-        if(ifChecked){setTimeStamp(String(TimeStamp).substring(0,4))}
-        else{setTimeStamp("")}
-        console.log(Message)        
-    }
+  };
 
-    const handleFocus = (e) => {
-            setPlaying(true)
-    }
+  const handleFocus = (e) => {
+    console.log("roewihtio");
+    setPlaying(true);
+  };
 
-    function getCurrentTime(){
-        const now = new Date();
-        const hours = now.getHours().toString().padStart(2, '0'); // Get hours and pad with leading zero if necessary
-        const minutes = now.getMinutes().toString().padStart(2, '0'); // Get minutes and pad with leading zero if necessary
-        return `${hours}:${minutes}`;
-    }
-    
-    const handleClick = async(e) =>{
-        e.preventDefault();
-        setPlaying(true)
-        const newobj=({
-                projectId:pid,
-                message:Message,
-                msgTime:getCurrentTime(),
-                timeStamp:timeStamp,
-                userName:localStorage.getItem("UserId"),
-                status:"pending",
+  function getCurrentTime() {
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, "0"); // Get hours and pad with leading zero if necessary
+    const minutes = now.getMinutes().toString().padStart(2, "0"); // Get minutes and pad with leading zero if necessary
+    return `${hours}:${minutes}`;
+  }
+
+  const handleClick = async (e) => {
+    e.preventDefault();
+    if (Message) {
+      setPlaying(true);
+      const newobj = {
+        projectId: pid,
+        message: Message,
+        msgTime: getCurrentTime(),
+        timeStamp: timeStamp,
+        userName: localStorage.getItem("UserId"),
+        status: "pending",
+      };
+      addReviewFunction(newobj);
+      axios
+        .post("../../api/reviews/add", newobj)
+        .then((response) => {
+          console.log("hii", response);
         })
-        addReviewFunction(newobj)
-        console.log("new obj",newobj)
-        axios.post("../../api/reviews/add",newobj)
-        .then((response)=>{
-          console.log("hii",response);
-        })
-        .catch((error)=>{
-          console.log("error ->",error)
-        })
+        .catch((error) => {
+          console.log("error ->", error);
+        });
     }
-    
-    return (
-      <div className="grid grid-rows-4 w-full">
-        <form onSubmit={handleClick}>
-          <div className="grid-rows-1 flex flex-row">
-          <img className="rounded-full  m-2 h-[50px] " src={avatar}/>
-            <input
-              onChange={handleChange}
-              onBlur={handleFocus}
-              onFocus={handleFocus}
-              placeholder='Add Your Review'
-              className="border-b bg-transparent border-gray-300 focus:outline-none focus:border-blue-500 transition duration-300 w-full text-xl font-medium"
-            />
-          </div>
-          <div className="grid-rows-1 flex flex-row justify-between">
-            <span className="px-2">
-              <label className="inline-flex items-center mt-3">
-                <input
-                  onChange={handelCheckbox}
-                  type="checkbox"
-                  className="form-checkbox h-5 w-5 text-blue-500" 
-                />
-                <span className="m-2 text-indigo-700 font-semibold rounded-lg">{TimeStamp.substring(0,4)}</span>
-              </label>
-            </span>
-            <button
-              type="submit"
-              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-lg px-5  text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-            >
-              Send
-            </button>
-          </div>
-        </form>
-      </div>
-    );
-}
+  };
 
-export default Commenttool
+  return (
+    <div className="mt-5 ">
+      <form onSubmit={handleClick}>
+        <div className="flex flex-row">
+          <img className="rounded-full  m-2 h-[50px] " src={avatar} alt="img" />
+          <input
+            onChange={handleChange}
+            placeholder="Add Your Review"
+            className="border-b bg-transparent border-gray-300 focus:outline-none focus:border-blue-500 transition duration-300 w-full text-xl font-medium"
+          />
+        </div>
+        <div className="flex flex-row justify-between items-center mt-5">
+          <span className="px-2">
+            <label className="inline-flex items-center ">
+              <input
+                onChange={handelCheckbox}
+                type="checkbox"
+                onClick={handleFocus}
+                className="form-checkbox h-5 w-5 text-blue-500"
+              />
+              <span className="m-2 text-indigo-700 font-semibold rounded-lg">
+                {TimeStamp ? TimeStamp : "0:00"}
+              </span>
+            </label>
+          </span>
+          <button
+            type="submit"
+            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-lg px-5  text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          >
+            Send
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+export default Commenttool;

@@ -6,64 +6,68 @@ import Commenttool from "../Chatbox/Commenttool";
 import { useLocation, useParams } from "react-router-dom";
 import useMutation from "../../hooks/useMutation";
 import axios from "axios";
+import Loader from "../Loader";
 
 const Video = (props) => {
   // const playerRef = useRef();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const videoID = searchParams.get("vid");
-  const [vid,setVid] = useState(videoID);
+  const [vid, setVid] = useState(videoID);
   const pid = searchParams.get("pid");
 
-
-  const [played,setPlayed] = useState("00")
+  const [played, setPlayed] = useState("00");
+  const [currentPlayTime, setCurrentPlayTime] = useState(0.0);
   const [playing, setPlaying] = useState(true);
-  const [timeStamp, settimeStamp] = useState();
   const [videoUrl, setVideoUrl] = useState(null); // State to store video URL
-  const [chat,SetReview] = useState([] );
-//video handling 
+  const [chat, SetReview] = useState([]);
+  const [loading, setLoading] = useState(true);
+  //video handling
 
-const [selectedFile, setSelectedFile] = useState(null);
-const URL = "/api/projects/uploadvideo"
+  const [selectedFile, setSelectedFile] = useState(null);
+  const URL = "/api/projects/uploadvideo";
 
-const handleReviewClick = (tt) => {
-  console.log("usereff",tt)
-}
-const {mutate:uploadImage,isLoading:uploading,error:uploadError,responseData:responseDataValue} = useMutation({url:URL ,method:"PUT"});
+  const handleReviewClick = (tt) => {
+    console.log("usereff", tt);
+  };
+  const {
+    mutate: uploadImage,
+    isLoading: uploading,
+    error: uploadError,
+    responseData: responseDataValue,
+  } = useMutation({ url: URL, method: "PUT" });
 
-const handleFileChange = (event) => {
-  // Access the file from event.target.files
-  const file = event.target.files[0];
-  setSelectedFile(file);
-};
+  const handleFileChange = (event) => {
+    // Access the file from event.target.files
+    const file = event.target.files[0];
+    setSelectedFile(file);
+  };
 
-const handleUpload = async e => {
-  // Handle uploading the selected file
-  if (selectedFile) {
-    const formData = new FormData();
-    formData.append('projectId',pid); // Add project ID to the FormData
-    formData.append('image', selectedFile);
-    await uploadImage(formData, pid); // Pass id as projectId
-  }
-  else {
-    console.log("No file selected");
-  }
-};
+  const handleUpload = async (e) => {
+    // Handle uploading the selected file
+    if (selectedFile) {
+      const formData = new FormData();
+      formData.append("projectId", pid); // Add project ID to the FormData
+      formData.append("image", selectedFile);
+      await uploadImage(formData, pid); // Pass id as projectId
+    } else {
+      console.log("No file selected");
+    }
+  };
 
   let videoComponent = null;
-  function fetchReviews(pid){
-    console.log("Project",pid);
-    axios.get(`../../api/reviews/getReview?projectId=${pid}`).then(function(response){
-      SetReview(response.data.data)
-    });
+  function fetchReviews(pid) {
+    axios
+      .get(`../../api/reviews/getReview?projectId=${pid}`)
+      .then(function (response) {
+        SetReview(response.data.data);
+      });
   }
- 
+
   useEffect(() => {
     async function fetchVideo() {
       try {
         if (vid !== "undefined" && typeof pid !== undefined) {
-          console.log("1 Project id during getVideo ", pid);
-          console.log("2 video id during getVideo ", vid);
           const response = await axios.get(`../../api/projects/getVideo`, {
             headers: {
               "x-project2-id": pid,
@@ -71,117 +75,114 @@ const handleUpload = async e => {
           });
 
           if (response.status === 200) {
-            console.log("presignedUrl", response.data.data);
             const videoUrlFromRes = response.data.data;
-            setVideoUrl(videoUrlFromRes[0]);
-            fetchReviews(pid)
+            if (response?.data?.data) {
+              setVideoUrl(videoUrlFromRes[0]);
+              fetchReviews(pid);
+            }
+            setTimeout(() => {
+              setLoading(false);
+            }, 200);
+          } else {
+            setTimeout(() => {
+              setLoading(false);
+            }, 200);
           }
-          else {
-            console.error("Error fetching video:", response.data.message);
-          }
-
         }
       } catch (error) {
         console.error("Error fetching video:", error);
       }
     }
-  
+
     fetchVideo();
-  
   }, [responseDataValue]); // Fetch video when responseDataValue changes
-  
 
-
-  function addReview(data){
-    
-    SetReview([
-      ...chat,
-      data
-    ])
+  function addReview(data) {
+    SetReview([...chat, data]);
   }
 
-  function setPlayingx(ts){
-    setPlaying(! playing)
-    return playing
+  function setPlayingx(ts) {
+    setPlaying(!playing);
+    return playing;
   }
 
-  const handleProgress = (progress) => {
-    const { played } = progress;
-    console.log("Playeddddddddddd",played)
+  const handleProgress = (progress, event) => {
+    const { playedSeconds, played } = progress;
     setPlayed(String(played));
-  }
-  console.log("sorted array",chat)
-  console.log("sorted array",SortChat(chat))
+    const minutes = Math.floor(playedSeconds / 60);
+    const seconds = Math.floor(playedSeconds % 60);
 
-  function SortChat(chat){
+    setCurrentPlayTime(`${minutes}:${seconds.toString().padStart(2, "0")}`);
+  };
+  // console.log("sorted array", chat);
+  // console.log("sorted array",SortChat(chat))
+
+  function SortChat(chat) {
     return chat.slice().sort((a, b) => {
-        if (a.timeStamp && !b.timeStamp) {
-            return 1;
-        } else if (!a.timeStamp && b.timeStamp) {
-            return -1;
-        } else {
-            return 0;
-        }
+      if (a.timeStamp && !b.timeStamp) {
+        return 1;
+      } else if (!a.timeStamp && b.timeStamp) {
+        return -1;
+      } else {
+        return 0;
+      }
     });
-}
+  }
 
-  if (vid === 'undefined') {
-    videoComponent =  (
+  if (vid === "undefined") {
+    videoComponent = (
       <div>
         <input type="file" onChange={handleFileChange} />
         <button onClick={handleUpload}>Upload</button>
         <div>Post</div>
       </div>
-      
-      )
-      
-  }  
-  else {
-    videoComponent = 
-    (
-      <ReactPlayer 
-      url={videoUrl} // Use videoUrl state here
-      playing={playing}
-      key={videoUrl}
-      onProgress={handleProgress}
-      controls 
-      currentTime={played}
-      stopOnUnmount={false}
+    );
+  } else {
+    videoComponent = (
+      <ReactPlayer
+        url={videoUrl} // Use videoUrl state here
+        playing={playing}
+        key={videoUrl}
+        onProgress={handleProgress}
+        controls
+        currentTime={played}
+        stopOnUnmount={false}
       />
-    )
+    );
   }
+
+  if (loading) return <Loader />;
   return (
-    <>
+    <div style={{ height: "80dvh" }}>
       <SBreadcrumbs />
-      <h1 className='m-3 ml-10 text-3xl font-bold'>Video Review {}</h1>
-      <div className="grid grid-cols-12 grid-flow-col" >
-        <div className=" grid col-span-8 m-3 p-3 place-content-center bg-gray-100">
-          {
-            
-          }
-            {videoComponent}
-  
-            <Commenttool addReviewFunction={addReview} setPlaying={setPlayingx} TimeStamp={played} pid={pid} />
+      <h1 className="m-3 ml-10 text-3xl font-bold">Video Review {}</h1>
+      <div className="grid grid-cols-12 grid-flow-col">
+        <div className=" grid col-span-8 m-3 p-3 place-content-center bg-gray-100 ">
+          {videoComponent}
+
+          <Commenttool
+            addReviewFunction={addReview}
+            setPlaying={setPlayingx}
+            TimeStamp={currentPlayTime}
+            pid={pid}
+          />
         </div>
-        <div className="col-span-4 m-3 p-3 border ">
-        <div>
-        <div className='grid-cols-3'>
-            <span>
-                uploaded by riyal 
-            </span>
-            <span>
-                1 month ago 
-            </span>
+        <div className="col-span-4 m-3 p-3 border  ">
+          <div>
+            <div className="grid-cols-3">
+              <span>uploaded by riyal</span>
+              <span>1 month ago</span>
+            </div>
+            <hr />
+            <div style={{ height: "40rem", overflow: "auto" }}>
+              {SortChat(chat).map((obj) => (
+                <Chatbox key={obj.id} obj={obj} setPlayed={setPlayed} />
+              ))}
+            </div>
+          </div>
         </div>
-        <hr />
-          {SortChat(chat).map((obj)=>(
-            <Chatbox key={obj.id} obj={obj} setPlayed={setPlayed}   />
-          ))}
-        </div>
-        
-    </div>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Toast from "../Toast";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -8,6 +9,7 @@ const Login = () => {
     Password: "",
   });
   const [error, setError] = useState({}); // Define error state
+  const [responseMsg, setResponseMsg] = useState({});
 
   const validateEmail = (value) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Regular expression for email format
@@ -65,21 +67,27 @@ const Login = () => {
   const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await axios
-      .post("api/users/login", formData)
-      .then((user) => {
-        console.log(user);
-        localStorage.setItem("isSession", true);
-        localStorage.setItem("UserId", user.data.data.user._id);
-        localStorage.setItem("UserEmail", user.data.data.user.Email);
-        localStorage.setItem("UserType", user.data.data.user.Type);
-        console.log(localStorage.getItem("UserId"));
-        navigate("/");
-      })
-      .catch((error) => {
-        localStorage.removeItem("isSession");
-        console.log("error", error);
-      });
+    if (error?.Email?.length === 0 && error?.Password?.length === 0) {
+      await axios
+        .post("api/users/login", formData)
+        .then((user) => {
+          setResponseMsg(user?.data);
+          localStorage.setItem("isSession", true);
+          localStorage.setItem("UserId", user.data.data.user._id);
+          localStorage.setItem("UserEmail", user.data.data.user.Email);
+          localStorage.setItem("UserType", user.data.data.user.Type);
+          if (user?.data?.success) {
+            setTimeout(() => {
+              navigate("/");
+            }, 1000);
+          }
+        })
+        .catch((error) => {
+          setResponseMsg(error?.response?.data);
+          localStorage.removeItem("isSession");
+          console.log("error", error);
+        });
+    }
   };
 
   return (
@@ -134,6 +142,10 @@ const Login = () => {
           Login
         </button>
       </form>
+      <Toast
+        message={responseMsg?.message}
+        type={responseMsg?.success ? "green" : "red"}
+      />
     </div>
   );
 };
