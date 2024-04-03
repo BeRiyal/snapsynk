@@ -1,8 +1,8 @@
-import React, { useContext, useEffect, useState } from "react";
-import ProjectCard from "./ProjectCard";
-import FloatingButton from "../AddProject/FloatingButton";
 import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import FloatingButton from "../AddProject/FloatingButton";
+import ProjectCard from "./ProjectCard";
 const Home = () => {
   const navigate = useNavigate();
 

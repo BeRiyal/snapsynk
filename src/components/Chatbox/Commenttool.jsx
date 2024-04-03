@@ -3,25 +3,14 @@ import React, { useState } from "react";
 import avatar from "../../Assets/avatar.jpeg";
 
 const Commenttool = ({ addReviewFunction, setPlaying, TimeStamp, pid }) => {
-  console.log(
-    `🚀  ~ file: Commenttool.jsx:6 ~ Commenttool ~ TimeStamp:`,
-    TimeStamp
-  );
   let [Message, setMessage] = useState();
-
-  let [timeStamp, setTimeStamp] = useState();
-  let [ifChecked, setCheckbox] = useState();
+  let [ifChecked, setCheckbox] = useState("pending");
 
   function handelCheckbox(e) {
     setCheckbox(e.target.checked);
   }
   const handleChange = (e) => {
     setMessage(e.target.value);
-    if (ifChecked) {
-      setTimeStamp(String(TimeStamp).substring(0, 4));
-    } else {
-      setTimeStamp("");
-    }
   };
 
   const handleFocus = (e) => {
@@ -39,20 +28,22 @@ const Commenttool = ({ addReviewFunction, setPlaying, TimeStamp, pid }) => {
   const handleClick = async (e) => {
     e.preventDefault();
     if (Message) {
-      setPlaying(true);
       const newobj = {
         projectId: pid,
         message: Message,
         msgTime: getCurrentTime(),
-        timeStamp: timeStamp,
+        timeStamp: TimeStamp,
         userName: localStorage.getItem("UserId"),
-        status: "pending",
+        status: ifChecked.toString(),
       };
       addReviewFunction(newobj);
-      axios
+      await axios
         .post("../../api/reviews/add", newobj)
         .then((response) => {
-          console.log("hii", response);
+          console.log("reviews response", response);
+          setTimeout(() => {
+            setMessage("");
+          }, 500);
         })
         .catch((error) => {
           console.log("error ->", error);

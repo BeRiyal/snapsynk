@@ -75,6 +75,7 @@ const Login = () => {
           localStorage.setItem("isSession", true);
           localStorage.setItem("UserId", user.data.data.user._id);
           localStorage.setItem("UserEmail", user.data.data.user.Email);
+          localStorage.setItem("UserName", user.data.data.user.Name);
           localStorage.setItem("UserType", user.data.data.user.Type);
           if (user?.data?.success) {
             setTimeout(() => {

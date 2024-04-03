@@ -1,14 +1,29 @@
+import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
-import SBreadcrumbs from "../Navbar/SBreadcrumbs";
 import ReactPlayer from "react-player";
+import { useLocation } from "react-router-dom";
+import useMutation from "../../hooks/useMutation";
 import Chatbox from "../Chatbox/Chatbox";
 import Commenttool from "../Chatbox/Commenttool";
-import { useLocation, useParams } from "react-router-dom";
-import useMutation from "../../hooks/useMutation";
-import axios from "axios";
 import Loader from "../Loader";
+import SBreadcrumbs from "../Navbar/SBreadcrumbs";
+
+const customSort = (a, b) => {
+  if (a.status === "pending" && b.status !== "pending") {
+    return -1; // "pending" status comes before other statuses
+  } else if (a.status !== "pending" && b.status === "pending") {
+    return 1; // Other statuses come after "pending" status
+  } else if (a.status === "true" && b.status !== "true") {
+    return 1; // "true" status comes after other statuses
+  } else if (a.status !== "true" && b.status === "true") {
+    return -1; // Other statuses come before "true" status
+  } else {
+    return 0; // If statuses are the same or not recognized, maintain original order
+  }
+};
 
 const Video = (props) => {
+  const playerRef = useRef(null);
   // const playerRef = useRef();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -21,6 +36,7 @@ const Video = (props) => {
   const [playing, setPlaying] = useState(true);
   const [videoUrl, setVideoUrl] = useState(null); // State to store video URL
   const [chat, SetReview] = useState([]);
+
   const [loading, setLoading] = useState(true);
   //video handling
 
@@ -60,7 +76,11 @@ const Video = (props) => {
     axios
       .get(`../../api/reviews/getReview?projectId=${pid}`)
       .then(function (response) {
+        console.log(`getReview response:`, response);
         SetReview(response.data.data);
+      })
+      .catch(function (error) {
+        console.log(error);
       });
   }
 
@@ -140,6 +160,7 @@ const Video = (props) => {
   } else {
     videoComponent = (
       <ReactPlayer
+        ref={playerRef}
         url={videoUrl} // Use videoUrl state here
         playing={playing}
         key={videoUrl}
@@ -175,8 +196,25 @@ const Video = (props) => {
             </div>
             <hr />
             <div style={{ height: "40rem", overflow: "auto" }}>
-              {SortChat(chat).map((obj) => (
-                <Chatbox key={obj.id} obj={obj} setPlayed={setPlayed} />
+              {chat.sort(customSort).map((obj) => (
+                <Chatbox
+                  key={obj.id}
+                  obj={obj}
+                  setPlayed={(value) => {
+                    const [minutes, seconds] = value.split(":").map(parseFloat);
+                    const totalTimeInSeconds = minutes * 60 + seconds;
+
+                    if (playerRef.current) {
+                      if (value === "") {
+                        playerRef.current.seekTo(0, "seconds");
+                        setPlaying(true);
+                      } else {
+                        playerRef.current.seekTo(totalTimeInSeconds, "seconds");
+                        setPlaying(true);
+                      }
+                    }
+                  }}
+                />
               ))}
             </div>
           </div>

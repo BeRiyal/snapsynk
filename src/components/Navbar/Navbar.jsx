@@ -1,8 +1,19 @@
 import React, { useState } from "react";
-import "../../index.css";
 import { Link, useNavigate } from "react-router-dom";
+
+import {
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  MenuItemOption,
+  MenuGroup,
+  MenuOptionGroup,
+  MenuDivider,
+} from "@chakra-ui/react";
 import logo from "../../Assets/Logo_SnapSynk.png";
 import avatar from "../../Assets/avatar.jpeg";
+import "../../index.css";
 
 function Navbar() {
   const [profilecardVisible, setPCVisible] = useState();
@@ -10,6 +21,8 @@ function Navbar() {
 
   function handleLogOut() {
     localStorage.removeItem("isSession");
+    localStorage.removeItem("UserName");
+    localStorage.removeItem("UserType");
     if (!localStorage.getItem("isSession")) {
       navigate("/Login");
     }
@@ -39,21 +52,60 @@ function Navbar() {
               </Link>
             </>
           ) : (
-            <button onClick={handleLogOut} className="mx-6" href="#">
-              Logout
-            </button>
+            <div className="flex items-center">
+              <Menu>
+                <MenuButton
+                  px={4}
+                  py={2}
+                  transition="all 0.2s"
+                  borderRadius="md"
+                  borderWidth="1px"
+                  _hover={{ bg: "gray.400" }}
+                  _expanded={{ bg: "blue.400" }}
+                  _focus={{ boxShadow: "outline" }}
+                  rightIcon={<div>hi</div>}
+                >
+                  <img className="rounded-full  m-2 h-[30px] " src={avatar} />
+                </MenuButton>
+                <MenuList
+                  style={{
+                    minWidth: "10rem",
+                    backgroundColor: "white",
+                    borderRadius: "10px",
+                    borderColor: "gray.400",
+                    borderWidth: "1px",
+                    borderStyle: "solid",
+                    boxShadow: "2px 2px 10px rgba(0, 0, 0, 0.2)",
+                    marginTop: "-5px",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    padding: "1rem",
+                    gap: "5px",
+                  }}
+                >
+                  <MenuItem className="mx-6">
+                    <button className="mx-6" href="#">
+                      {localStorage.getItem("UserName")}
+                    </button>
+                  </MenuItem>
+                  <MenuItem className="mx-6">
+                    <button className="mx-6" href="#">
+                      {localStorage.getItem("UserType")}
+                    </button>
+                  </MenuItem>
+                  <MenuDivider sx={{ width: "100%" }} />
+                  <MenuItem>
+                    <button onClick={handleLogOut} className="mx-6" href="#">
+                      Logout
+                    </button>
+                  </MenuItem>
+                </MenuList>
+              </Menu>
+            </div>
           )}
         </nav>
-
-        <div className="flex items-center">
-          <img className="rounded-full  m-2 h-[30px] " src={avatar} />
-          <div>
-            <strong className="block">
-              {localStorage.getItem("UserName")}
-            </strong>
-            <span>{localStorage.getItem("UserType")}</span>
-          </div>
-        </div>
       </div>
     </div>
   );
