@@ -130,17 +130,17 @@ const Chat = () => {
   return (
     <div className="bg-gray-100  flex flex-col">
       <div className="bg-white p-4 flex justify-between items-center shadow-md w-full ">
-        <input
+        {/* <input
           type="text"
           placeholder="Search in chat..."
           value={searchQuery}
           onChange={handleSearchChange}
           className="border rounded-full px-4 py-2 w-1/3 focus:outline-none focus:ring focus:border-blue-300"
-        />
+        /> */}
         <CSVLink
           data={csvData}
           filename={"chat_messages.csv"}
-          className="bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300"
+          className="bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300 ml-auto"
         >
           Download CSV
         </CSVLink>
