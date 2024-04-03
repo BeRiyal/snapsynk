@@ -90,6 +90,7 @@ function Navbar() {
                       {localStorage.getItem("UserName")}
                     </button>
                   </MenuItem>
+                  <MenuDivider sx={{ width: "100%" }} />
                   <MenuItem className="mx-6">
                     <button className="mx-6" href="#">
                       {localStorage.getItem("UserType")}
