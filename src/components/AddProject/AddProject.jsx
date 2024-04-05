@@ -1,31 +1,30 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Loader from "../Loader";
 
 const AddProject = () => {
-  if(localStorage.getItem("UserType")!=="Leader"){
-    navigate("Contact");
-  }
-  const [suggestions, setSuggestions] = useState({
-    
-  });
+  const navigate = useNavigate();
+  // if(localStorage.getItem("UserType")!=="Leader"){
+  //   navigate("Contact");
+  // }
+  const [suggestions, setSuggestions] = useState({});
+
   // Function to handle suggestion selection
   const handleSuggestionClick = (type, suggestion) => {
     setTeam((prevTeam) => ({
       ...prevTeam,
-      [type]: suggestion
+      [type]: suggestion,
     }));
     // Clear suggestions for the clicked type only
     setSuggestions((prevSuggestions) => ({
       ...prevSuggestions,
-      [type]: []
+      [type]: [],
     }));
   };
-  
+
   //___states for Session,Error,Loading START
-  const [ifError, setError] = useState(false);
-  const [ifLoading, setLoading] = useState(false);
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   //___states for Session,Error,Loading END
 
@@ -45,7 +44,7 @@ const AddProject = () => {
 
   const handleAddProjInput = (e) => {
     fetchSuggestions(e.target.value, e.target.name);
-    setError(false);
+
     const name = e.target.name;
     const value = e.target.value;
     if (team.hasOwnProperty(name)) {
@@ -64,48 +63,48 @@ const AddProject = () => {
     try {
       const data = {
         searchString: searchString,
-        type: type
+        type: type,
       };
       // Make a POST request to the endpoint with the search string and type as query parameters
-      const response = await axios.post('/api/users/search', data);
+      const response = await axios.post("/api/users/search", data);
       const suggestion = response.data.data;
-      
+
       // Merge the new suggestions with the existing state
       setSuggestions((prevSuggestions) => ({
         ...prevSuggestions,
-        [type]: suggestion
+        [type]: suggestion,
       }));
     } catch (error) {
-      console.error('Error fetching suggestions:', error.message);
+      console.error("Error fetching suggestions:", error.message);
       setSuggestions({}); // Return an empty object if an error occurs
     }
   };
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
- 
+
     await axios
       .post("api/teams/add", team)
       .then(async (teamResponse) => {
-        console.log("team Response", teamResponse.data.data._id);
         const newBody = {
           ...project,
           teamId: teamResponse.data.data._id,
         };
         await axios.post("api/projects/add", newBody).then((response) => {
-          if (("dsds", response.data.success)) {
+          if (response.data.success) {
             navigate("/");
           }
         });
       })
       .catch((error) => {
         setLoading(false);
-        setError(true);
       });
-    setLoading(false);
   };
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <div>
@@ -145,7 +144,6 @@ const AddProject = () => {
               value={localStorage.getItem("UserEmail")}
               required
             />
-
           </div>
           <div className="mb-4">
             <div className="flex flex-row">
@@ -161,20 +159,22 @@ const AddProject = () => {
               className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:border-blue-500"
               id="projectLead"
               type="text"
-              value={team.Editor}
+              value={team?.Editor}
               placeholder="Editor"
               name="Editor"
               onChange={handleAddProjInput}
               required
             />
-            {suggestions.hasOwnProperty("Editor") &&
-              suggestions["Editor"].length > 0 && (
-                <ul className="absolute z-10 bg-white border border-gray-300 rounded-md w-full mt-1 py-1 shadow-md">
-                  {suggestions["Editor"].map((suggestion, index) => (
+            {suggestions?.hasOwnProperty("Editor") &&
+              suggestions?.Editor?.length > 0 && (
+                <ul className="absolute z-10 bg-white border border-gray-300 rounded-md w-3/12 mt-1 py-1 shadow-md">
+                  {suggestions?.Editor?.map((suggestion, index) => (
                     <li
                       key={index}
                       className="px-3 py-1 cursor-pointer hover:bg-gray-100"
-                      onClick={() => handleSuggestionClick("Editor",suggestion)}
+                      onClick={() =>
+                        handleSuggestionClick("Editor", suggestion)
+                      }
                     >
                       {suggestion}
                     </li>
@@ -198,18 +198,20 @@ const AddProject = () => {
               type="text"
               placeholder="Client"
               name="Client"
-              value={team.Client}
+              value={team?.Client || null}
               onChange={handleAddProjInput}
               required
             />
             {suggestions.hasOwnProperty("Client") &&
-              suggestions["Client"].length > 0 && (
-                <ul className="absolute z-10 bg-white border border-gray-300 rounded-md w-full mt-1 py-1 shadow-md">
-                  {suggestions["Client"].map((suggestion, index) => (
+              suggestions?.Client?.length > 0 && (
+                <ul className="absolute z-10 bg-white border border-gray-300 rounded-md w-3/12 mt-1 py-1 shadow-md">
+                  {suggestions?.Client?.map((suggestion, index) => (
                     <li
                       key={index}
                       className="px-3 py-1 cursor-pointer hover:bg-gray-100"
-                      onClick={() => handleSuggestionClick("Client",suggestion)}
+                      onClick={() =>
+                        handleSuggestionClick("Client", suggestion)
+                      }
                     >
                       {suggestion}
                     </li>
@@ -233,7 +235,6 @@ const AddProject = () => {
               onChange={handleAddProjInput}
               required
             />
-            
           </div>
           <div className="flex flex-row justify-center">
             <button
@@ -247,7 +248,6 @@ const AddProject = () => {
       </div>
     </div>
   );
-
 };
 
 export default AddProject;
