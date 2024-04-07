@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 const FloatingButton = () => {
   const navigate = useNavigate();
   const toggleExpansion = () => {
-    if (localStorage.getItem("UserType") === "Leader") {
+    if (localStorage.getItem("UserType") === "Admin") {
       navigate("AddProject");
     } else {
       navigate("Contact");

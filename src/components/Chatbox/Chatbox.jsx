@@ -85,7 +85,7 @@ const Chatbox = (props) => {
                 type="checkbox"
                 checked={props?.obj?.status == "true" ? true : false}
                 className="form-checkbox h-5 w-5 text-blue-500"
-              />
+                style={{ "accent-color": "rgb(0, 200, 0)"}}              />
               <span className="m-2 text-gray-700 rounded-lg">Completed</span>
             </label>
           </span>

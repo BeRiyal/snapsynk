@@ -1,117 +1,69 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+
+const DummyFiles = [
+  { id: 1, fileTitle: 'File 1', fileDescription: 'File Description 1', uploadedBy: 'User 1', uploadDate: '2024-04-10' },
+  { id: 2, fileTitle: 'File 2', fileDescription: 'File Description 2', uploadedBy: 'User 2', uploadDate: '2024-04-15' },
+  { id: 3, fileTitle: 'File 3', fileDescription: 'File Description 3', uploadedBy: 'User 3', uploadDate: '2024-04-20' }
+];
 
 const Docs = () => {
-  const [currentPath, setCurrentPath] = useState('/');
-  const [files, setFiles] = useState([]);
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [sortType, setSortType] = useState('name');
-  const [sortOrder, setSortOrder] = useState('asc');
+  const [files, setFiles] = useState(DummyFiles);
 
-  useEffect(() => {
-    fetchFiles(currentPath);
-  }, [currentPath]);
-
-  const fetchFiles = async (path) => {
-    try {
-      const response = await fetch(`/api/files?path=${encodeURIComponent(path)}`);
-      const data = await response.json();
-      setFiles(data.files);
-    } catch (error) {
-      console.error('Error fetching files:', error);
-    }
+  const handleDeleteFile = (id) => {
+    setFiles(files.filter(file => file.id !== id));
+    // Here you can perform delete operation
   };
-
-  const handleFolderClick = (folderName) => {
-    const newPath = `${currentPath}/${folderName}`;
-    setCurrentPath(newPath);
-  };
-
-  const handleBackClick = () => {
-    const newPath = currentPath.split('/').slice(0, -1).join('/');
-    setCurrentPath(newPath);
-  };
-
-  const handleFileClick = (file) => {
-    setSelectedFile(file);
-  };
-
-  const handleFileUpload = (event) => {
-    const filesToUpload = event.target.files;
-    // Upload files to the server
-  };
-
-  const handleFileDownload = () => {
-    if (selectedFile) {
-      // Download the selected file
-    }
-  };
-
-  const handleFileDelete = () => {
-    if (selectedFile) {
-      // Delete the selected file
-    }
-  };
-
-  const handleFileRename = (newName) => {
-    if (selectedFile) {
-      // Rename the selected file to newName
-    }
-  };
-
-  const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
-  };
-
-  const handleSortChange = (type) => {
-    if (type === sortType) {
-      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortType(type);
-      setSortOrder('asc');
-    }
-  };
-
-  const filteredFiles = files.filter((file) =>
-    file.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  // Sorting files based on sortType and sortOrder
-
+  function toCamelCase(str) {
+    return str.replace(/\w\S*/g, function (txt) {
+    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+  }
   return (
-    <div>
-      {/* Header with search, upload, sort, filter options */}
+    <>
       <div>
-        <input type="text" placeholder="Search..." value={searchTerm} onChange={handleSearchChange} />
-        <input type="file" onChange={handleFileUpload} />
-        <button onClick={handleFileDownload}>Download</button>
-        <button onClick={handleFileDelete}>Delete</button>
-        <button onClick={() => handleFileRename('NewName')}>Rename</button>
-        <select onChange={(e) => handleSortChange(e.target.value)}>
-          <option value="name">Name</option>
-          <option value="size">Size</option>
-          <option value="date">Date</option>
-        </select>
+        <h1 className="m-3 ml-5 text-3xl font-bold">
+          VoiceOver : {toCamelCase("data.projectTitle")}
+        </h1>
+        <hr />
       </div>
-      {/* File and folder listing */}
-      <div>
-        {filteredFiles.map((file) => (
-          <div key={file.name} onClick={() => handleFileClick(file)}>
-            {file.isDirectory ? (
-              <strong>{file.name}</strong>
-            ) : (
-              <span>{file.name}</span>
-            )}
-          </div>
-        ))}
+      <div className="overflow-x-auto">
+        <table className="table-auto w-full border-collapse border border-gray-400">
+          <thead>
+            <tr>
+              <th className="px-4 py-2">File Title</th>
+              <th className="px-4 py-2">File Description</th>
+              <th className="px-4 py-2">Uploaded By</th>
+              <th className="px-4 py-2">Upload Date</th>
+              <th className="px-4 py-2">Download File</th>
+              <th className="px-4 py-2">Delete File</th>
+            </tr>
+          </thead>
+          <tbody>
+            {files.map((file) => (
+              <tr key={file.id}>
+                <td className="border px-4 py-2">{file.fileTitle}</td>
+                <td className="border px-4 py-2">{file.fileDescription}</td>
+                <td className="border px-4 py-2">{file.uploadedBy}</td>
+                <td className="border px-4 py-2">{file.uploadDate}</td>
+                <td className="border px-4 py-2">
+                  <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    Download
+                  </button>
+                </td>
+                <td className="border px-4 py-2">
+                  <button
+                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                    onClick={() => handleDeleteFile(file.id)}
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
-      {/* Selected file preview */}
-      {selectedFile && (
-        <div>
-          {/* File preview component */}
-        </div>
-      )}
-    </div>
+    </>
   );
 };
 

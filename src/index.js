@@ -21,6 +21,8 @@ import Register from "./components/Register/Register.jsx";
 import Chat from "./components/Teams/Chat.js";
 import Video from "./components/Video/Video.jsx";
 import reportWebVitals from "./reportWebVitals";
+import Sedules from "./components/Sedules/Sedules.jsx";
+import AudioPlayer from "./components/Chatbox/Audio/AudioPlayer.jsx";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 // route for navigation simulation
@@ -49,10 +51,10 @@ const router = createBrowserRouter(
       <Route path="Project/:id" element={<ProjectBoard />} />
       <Route path="Project/Video" element={<Video />} />
       <Route path="Project/Moodboard/:id" element={<MoodBoard />} />
-      <Route path="Project/Voiceover" element={<h1>VoiceOver</h1>} />
+      <Route path="Project/Voiceover" element={<AudioPlayer/>} />
       <Route path="Project/Script" element={<PDFViewer />} />
       <Route path="Project/Teams/:id" element={<Chat />} />
-      <Route path="Project/Socialsedules" element={<h1>Social Sedules</h1>} />
+      <Route path="Project/Socialsedules" element={<Sedules />} />
       <Route path="Project/Deadlines" element={<h1>Deadlines</h1>} />
       <Route path="Project/Otherdocs" element={<Docs />} />
       <Route path="Login" element={<Login />} />
