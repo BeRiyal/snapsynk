@@ -33,8 +33,12 @@ const Commenttool = ({ addReviewFunction, setPlaying, TimeStamp, pid }) => {
         message: Message,
         msgTime: getCurrentTime(),
         timeStamp: TimeStamp,
-        userName: localStorage.getItem("UserId"),
-        status: ifChecked.toString(),
+        userName: {
+          _id: localStorage.getItem("UserId"),
+          Name: localStorage.getItem("UserName"),
+          Type: localStorage.getItem("UserType"),
+        },
+        status: "pending",
       };
       addReviewFunction(newobj);
       await axios

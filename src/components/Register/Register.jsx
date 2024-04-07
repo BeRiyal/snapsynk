@@ -142,13 +142,15 @@ const Register = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     let isValid = false; // Corrected variable name
     for (const name in register) {
       const value = register[name];
       validateField(name, value);
       isValid = validateField(name, value);
     }
-
+    
+    return false
     if (isValid) {
       await setType(); // Wait for setType to complete before proceeding
       axios

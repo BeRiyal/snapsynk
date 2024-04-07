@@ -41,7 +41,7 @@ function Navbar() {
         </Link>
       </div>
       <div className="flex items-center">
-        <nav className="text-lg font-semibold">
+        <nav className="text-lg font-semibold" style={{zIndex:9999}}>
           {!localStorage.getItem("isSession") ? (
             <>
               <Link to="Login" className="mx-6" href="#">
@@ -52,7 +52,7 @@ function Navbar() {
               </Link>
             </>
           ) : (
-            <div className="flex items-center">
+            <div className="flex items-center" style={{zIndex:999999}} >
               <Menu>
                 <MenuButton
                   px={4}

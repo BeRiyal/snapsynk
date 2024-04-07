@@ -22,7 +22,10 @@ const Chat = () => {
       projectId: String,
     },
   ]);
-  const [messagePost, setMessagePost] = useState();
+
+  console.log("tjis is messages", messages)
+  const [recallApi, setRecallApi] = useState();
+
   let { id } = useParams();
 
   useEffect(() => {
@@ -43,7 +46,7 @@ const Chat = () => {
     };
 
     fetchMessages();
-  }, []);
+  }, [recallApi]);
 
   const scrollToBottom = () => {
     // chatEndRef.current.scrollIntoView({ behavior: "smooth" });
@@ -63,8 +66,9 @@ const Chat = () => {
       .post("../../api/chats/AddMessages", newMessage)
       .then((response) => {
         console.log("Chat post response data", response);
+        setRecallApi(Math.floor(Math.random() * 1000))
         // Assuming the response contains the newly added message data
-        setMessages((prevMessages) => [...prevMessages, response.data]);
+        // setMessages((prevMessages) => [...prevMessages, response.data]);
       })
       .catch((error) => {
         console.log("error of post message api call", error);
@@ -74,13 +78,13 @@ const Chat = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     if (inputMessage.trim() !== "") {
-      const newMessage = {
-        text: inputMessage,
-        timestamp: new Date().toLocaleTimeString(),
-        user: "You",
-        userType: "Editor",
-      };
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
+      // const newMessage = {
+      //   text: inputMessage,
+      //   timestamp: new Date().toLocaleTimeString(),
+      //   user: "You",
+      //   userType: "Editor",
+      // };
+      // setMessages((prevMessages) => [...prevMessages, newMessage]);
       setInputMessage("");
       postMessage({
         projectId: id,
@@ -150,47 +154,57 @@ const Chat = () => {
         style={{ height: "calc(100vh - 200px)" }}
         onScroll={handleScroll}
       >
-        {filteredMessages.map((message, index) => (
-          <div
-            key={index}
-            className={`mb-2 ${
-              message?.UserId?._id === localStorage.getItem("UserId")
-                ? "ml-auto"
-                : "mr-auto"
-            }`}
-          >
+        {filteredMessages.map((message, index) => {
+          return (
             <div
-              className={
-                "flex " +
-                (message?.UserId?._id !== localStorage.getItem("UserId")
-                  ? "flex-row-reverse"
-                  : "")
-              }
-            >
-              <img className="rounded-full  m-2 h-[45px] " src={avatar} />
-              <div
-                className={`rounded-lg ${
-                  message?.UserId?._id !== localStorage.getItem("UserId")
-                    ? "bg-blue-100"
-                    : message?.UserId.userType === "Editor"
-                    ? "bg-gray-200"
-                    : message?.UserId.userType === "Admin"
+              key={index}
+              className={`rounded-lg my-2 ${message?.UserId?._id !== localStorage.getItem("UserId")
+                ? "bg-blue-100"
+                : message?.UserId.userType === "Editor"
+                  ? "bg-gray-200"
+                  : message?.UserId.userType === "Admin"
                     ? "bg-green-200"
                     : "bg-gray-300"
-                } p-2 max-w-xs break-words ${
-                  message?.UserId?._id === localStorage.getItem("UserId")
-                    ? "text-right"
-                    : "text-left"
+                } p-2 max-w-xs break-words ${message?.UserId?._id === localStorage.getItem("UserId")
+                  ? "text-right"
+                  : "text-left"
+                }mb-2 ${message?.UserId?._id === localStorage.getItem("UserId")
+                  ? "ml-auto"
+                  : "mr-auto"
                 }`}
+
+            >
+              <div
+                className={
+                  "flex " +
+                  (message?.UserId?._id !== localStorage.getItem("UserId")
+                    ? "flex-row-reverse"
+                    : "")
+                }
               >
-                <p className="font-semibold">{message.Text}</p>
-                <span className="text-gray-500 text-xs">
-                  {message.Time.toString().substring(0, 4)}
-                </span>
+                <div
+
+                >
+                  <p className="font-semibold">{message.Text}</p>
+
+
+                </div>
+                <div className="flex center flex-col">
+
+                  <img className="rounded-full  m-2 h-[45px]" style={{ objectFit: "contain" }} src={avatar} />
+                  <span>
+
+                    <span className="ml-2">{message?.UserId?.Name}</span>
+                    <span className="ml-2">{message?.UserId?.Type}</span>
+                    <span className="ml-2 text-gray-500 text-xs">
+                      {message.Time.toString().substring(0, 4)}
+                    </span>
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
         <div ref={chatEndRef}></div>
       </div>
       <form

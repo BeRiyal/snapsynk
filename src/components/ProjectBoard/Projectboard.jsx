@@ -37,13 +37,19 @@ const Projectboard = () => {
       return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
     });
   }
-  function handleClick(type) { 
+  function handleClick(type) {
     switch (type) {
       case "video":
         if (data.videoId) {
           navigate(`../project/Video/?pid=${id}&vid=${data.videoId}`);
         } else {
-          openModal("No Video Found");
+          if (localStorage.getItem("UserType") === "Editor") {
+            navigate(`../project/Video/?pid=${id}&vid=${data.videoId}`);
+
+          } else {
+
+            openModal("No Video Found");
+          }
         }
         break;
       case "moodboard":
