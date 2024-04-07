@@ -22,7 +22,7 @@ import Chat from "./components/Teams/Chat.js";
 import Video from "./components/Video/Video.jsx";
 import reportWebVitals from "./reportWebVitals";
 import Sedules from "./components/Sedules/Sedules.jsx";
-import AudioPlayer from "./components/Chatbox/Audio/AudioPlayer.jsx";
+import AudioPlayer from "./components/Audio/AudioPlayer.jsx";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 // route for navigation simulation

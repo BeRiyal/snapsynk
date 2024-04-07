@@ -10,6 +10,14 @@ import {
 } from "react-router-dom";
 import Alert from "../alert";
 
+import mic from "../../Assets/svg/mic.svg"
+import video from "../../Assets/svg/video.svg"
+import moodboard from"../../Assets/svg/moodboard.svg"
+import scrpit from "../../Assets/svg/script.svg"
+import sedules from "../../Assets/svg/sedules.svg"
+import teams from "../../Assets/svg/teams.svg"
+import docs from "../../Assets/svg/docs.svg"
+
 const Projectboard = () => {
   if (!localStorage.getItem("isSession")) {
     navigate("/Login");
@@ -127,20 +135,9 @@ const Projectboard = () => {
           <span className="text-white font-bold text-xl absolute bottom-5 right-5">
             Video Review
           </span>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6 text-white absolute top-5 left-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 5l7 7-7 7"
-            />
-          </svg>
+          <span className="w-20 text-white absolute top-5 left-5">
+            <img src={video} />
+          </span>
         </div>
         <div
           onClick={() => handleClick("moodboard")}
@@ -148,6 +145,9 @@ const Projectboard = () => {
         >
           <span className="text-white font-bold text-xl absolute bottom-5 right-5">
             Moodboard
+          </span>
+          <span className="w-20 text-white absolute top-5 left-5">
+            <img src={moodboard} />
           </span>
         </div>
         <div
@@ -157,6 +157,9 @@ const Projectboard = () => {
           <span className="text-white font-bold text-xl absolute bottom-5 right-5">
             Voice Over
           </span>
+          <span className="w-20 text-white absolute top-5 left-5">
+            <img src={mic} />
+          </span>
         </div>
         <div
           onClick={() => handleClick("script")}
@@ -164,6 +167,9 @@ const Projectboard = () => {
         >
           <span className="text-white font-bold text-xl absolute bottom-5 right-5">
             Script
+          </span>
+          <span className="w-20 text-white absolute top-5 left-5">
+            <img src={scrpit} />
           </span>
         </div>
         <div
@@ -173,6 +179,9 @@ const Projectboard = () => {
           <span className="text-white font-bold text-xl absolute bottom-5 right-5">
             Teams
           </span>
+          <span className="w-20 text-white absolute top-5 left-5">
+            <img src={teams} />
+          </span>
         </div>
         <div
           onClick={() => handleClick("socsed")}
@@ -181,13 +190,8 @@ const Projectboard = () => {
           <span className="text-white font-bold text-xl absolute bottom-5 right-5">
             Social Sedules
           </span>
-        </div>
-        <div
-          onClick={() => handleClick("cal")}
-          className="m-3 p-16 card bg-gradient-to-br from-indigo-400 to-indigo-600 rounded-lg shadow-xl relative"
-        >
-          <span className="text-white font-bold text-xl absolute bottom-5 right-5">
-            Deadlines
+          <span className="w-20 text-white absolute top-5 left-5">
+            <img src={sedules} />
           </span>
         </div>
         <div
@@ -196,6 +200,9 @@ const Projectboard = () => {
         >
           <span className="text-white font-bold text-xl absolute bottom-5 right-5">
             Other Docs
+          </span>
+          <span className="w-20 text-white absolute top-5 left-5">
+            <img src={docs} />
           </span>
         </div>
       </div>
