@@ -154,44 +154,57 @@ const Chat = () => {
         style={{ height: "calc(100vh - 200px)" }}
         onScroll={handleScroll}
       >
-        {filteredMessages.map((message, index) => (
-          <div
-            key={index}
-            className={`mb-2 ${message?.UserId?._id === localStorage.getItem("UserId")
-                ? "ml-auto"
-                : "mr-auto"
-              }`}
-          >
+        {filteredMessages.map((message, index) => {
+          return (
             <div
-              className={
-                "flex " +
-                (message?.UserId?._id !== localStorage.getItem("UserId")
-                  ? "flex-row-reverse"
-                  : "")
-              }
+              key={index}
+              className={`rounded-lg my-2 ${message?.UserId?._id !== localStorage.getItem("UserId")
+                ? "bg-blue-100"
+                : message?.UserId.userType === "Editor"
+                  ? "bg-gray-200"
+                  : message?.UserId.userType === "Admin"
+                    ? "bg-green-200"
+                    : "bg-gray-300"
+                } p-2 max-w-xs break-words ${message?.UserId?._id === localStorage.getItem("UserId")
+                  ? "text-right"
+                  : "text-left"
+                }mb-2 ${message?.UserId?._id === localStorage.getItem("UserId")
+                  ? "ml-auto"
+                  : "mr-auto"
+                }`}
+
             >
-              <img className="rounded-full  m-2 h-[45px] " src={avatar} />
               <div
-                className={`rounded-lg ${message?.UserId?._id !== localStorage.getItem("UserId")
-                    ? "bg-blue-100"
-                    : message?.UserId.userType === "Editor"
-                      ? "bg-gray-200"
-                      : message?.UserId.userType === "Admin"
-                        ? "bg-green-200"
-                        : "bg-gray-300"
-                  } p-2 max-w-xs break-words ${message?.UserId?._id === localStorage.getItem("UserId")
-                    ? "text-right"
-                    : "text-left"
-                  }`}
+                className={
+                  "flex " +
+                  (message?.UserId?._id !== localStorage.getItem("UserId")
+                    ? "flex-row-reverse"
+                    : "")
+                }
               >
-                <p className="font-semibold">{message.Text}</p>
-                <span className="text-gray-500 text-xs">
-                  {message.Time.toString().substring(0, 4)}
-                </span>
+                <div
+
+                >
+                  <p className="font-semibold">{message.Text}</p>
+
+
+                </div>
+                <div className="flex center flex-col">
+
+                  <img className="rounded-full  m-2 h-[45px]" style={{ objectFit: "contain" }} src={avatar} />
+                  <span>
+
+                    <span className="ml-2">{message?.UserId?.Name}</span>
+                    <span className="ml-2">{message?.UserId?.Type}</span>
+                    <span className="ml-2 text-gray-500 text-xs">
+                      {message.Time.toString().substring(0, 4)}
+                    </span>
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
         <div ref={chatEndRef}></div>
       </div>
       <form

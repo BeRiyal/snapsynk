@@ -28,7 +28,9 @@ const useMutation = ({ url, method }) => {
         );
       }
       console.log("Response data:", response.data); // Log the response data
-      setState({ isLoading: false, error: "", responseData: response.data }); // Set responseData on success
+      setState({ isLoading: false, error: "", responseData: response.data });
+      return response.data
+      // Set responseData on success
     } catch (error) {
       setState({ isLoading: false, error, responseData: null }); // Reset responseData on error
     }

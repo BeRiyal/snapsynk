@@ -67,10 +67,9 @@ const Video = (props) => {
       formData.append("image", selectedFile);
       await uploadImage(formData, pid)
         .then((res) => {
-          if(res?.status===true){
+          if(res?.success===true){
             window.history.back()
           }
-          console.log("this is response", res);
         })
         .catch((e) => console.log("this is error", e)); // Pass id as projectId
     } else {
@@ -126,6 +125,7 @@ const Video = (props) => {
   }, [responseDataValue]); // Fetch video when responseDataValue changes
 
   function addReview(data) {
+    
     SetReview([...chat, data]);
   }
 
