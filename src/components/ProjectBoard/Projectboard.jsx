@@ -10,13 +10,13 @@ import {
 } from "react-router-dom";
 import Alert from "../alert";
 
-import mic from "../../Assets/svg/mic.svg"
-import video from "../../Assets/svg/video.svg"
-import moodboard from"../../Assets/svg/moodboard.svg"
-import scrpit from "../../Assets/svg/script.svg"
-import sedules from "../../Assets/svg/sedules.svg"
-import teams from "../../Assets/svg/teams.svg"
-import docs from "../../Assets/svg/docs.svg"
+import mic from "../../Assets/svg/mic.svg";
+import video from "../../Assets/svg/video.svg";
+import moodboard from "../../Assets/svg/moodboard.svg";
+import scrpit from "../../Assets/svg/script.svg";
+import sedules from "../../Assets/svg/sedules.svg";
+import teams from "../../Assets/svg/teams.svg";
+import docs from "../../Assets/svg/docs.svg";
 
 const Projectboard = () => {
   if (!localStorage.getItem("isSession")) {
@@ -53,9 +53,7 @@ const Projectboard = () => {
         } else {
           if (localStorage.getItem("UserType") === "Editor") {
             navigate(`../project/Video/?pid=${id}&vid=${data.videoId}`);
-
           } else {
-
             openModal("No Video Found");
           }
         }
