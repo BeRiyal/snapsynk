@@ -35,6 +35,7 @@ const Video = (props) => {
   const [playing, setPlaying] = useState(true);
   const [videoUrl, setVideoUrl] = useState(null); // State to store video URL
   const [chat, SetReview] = useState([]);
+  console.log(`🚀  ~ file: Video.jsx:38 ~ Video ~ chat:`, chat);
 
   const [loading, setLoading] = useState(false);
   //video handling
@@ -58,7 +59,7 @@ const Video = (props) => {
     setSelectedFile(file);
   };
 
-  const handleUpload = async (e) => { 
+  const handleUpload = async (e) => {
     // Handle uploading the selected file
     if (selectedFile) {
       const formData = new FormData();
@@ -66,8 +67,8 @@ const Video = (props) => {
       formData.append("image", selectedFile);
       await uploadImage(formData, pid)
         .then((res) => {
-          if(res?.success===true){
-            window.history.back()
+          if (res?.success === true) {
+            window.history.back();
           }
         })
         .catch((e) => console.log("this is error", e)); // Pass id as projectId
@@ -101,7 +102,7 @@ const Video = (props) => {
           });
 
           if (response.status === 200) {
-            const videoUrlFromRes = response.data.data; 
+            const videoUrlFromRes = response.data.data;
             if (response?.data?.data) {
               setVideoUrl(videoUrlFromRes[0]);
               fetchReviews(pid);
@@ -124,7 +125,6 @@ const Video = (props) => {
   }, [responseDataValue]); // Fetch video when responseDataValue changes
 
   function addReview(data) {
-    
     SetReview([...chat, data]);
   }
 
@@ -218,31 +218,33 @@ const Video = (props) => {
               </div>
               <hr />
               <div style={{ height: "40rem", overflow: "auto" }}>
-                {chat.sort(customSort).map((obj) => (
-                  <Chatbox
-                    key={obj.id}
-                    obj={obj}
-                    setPlayed={(value) => {
-                      const [minutes, seconds] = value
-                        .split(":")
-                        .map(parseFloat);
-                      const totalTimeInSeconds = minutes * 60 + seconds;
+                {chat.sort(customSort).map((obj) => {
+                  return (
+                    <Chatbox
+                      key={obj.id}
+                      obj={obj}
+                      setPlayed={(value) => {
+                        const [minutes, seconds] = value
+                          .split(":")
+                          .map(parseFloat);
+                        const totalTimeInSeconds = minutes * 60 + seconds;
 
-                      if (playerRef.current) {
-                        if (value === "") {
-                          playerRef.current.seekTo(0, "seconds");
-                          setPlaying(true);
-                        } else {
-                          playerRef.current.seekTo(
-                            totalTimeInSeconds,
-                            "seconds"
-                          );
-                          setPlaying(true);
+                        if (playerRef.current) {
+                          if (value === "") {
+                            playerRef.current.seekTo(0, "seconds");
+                            setPlaying(true);
+                          } else {
+                            playerRef.current.seekTo(
+                              totalTimeInSeconds,
+                              "seconds"
+                            );
+                            setPlaying(true);
+                          }
                         }
-                      }
-                    }}
-                  />
-                ))}
+                      }}
+                    />
+                  );
+                })}
               </div>
             </div>
           </div>

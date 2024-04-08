@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import avatar from "../../Assets/avatar.jpeg";
-import { checkbox } from "@material-tailwind/react";
-import axios from "axios";
 
 const Chatbox = (props) => {
   console.log("this is check box", props);
@@ -51,35 +49,30 @@ const Chatbox = (props) => {
     return number < 10 ? `0${number}` : number;
   }
 
-  const checkboxOnchange =async (value) => {
-    // await axios
-    // .put(`../../api/reviews/${props?.obj?._id}/status`, { status: value.toString() })
-    // .then((response) => {
-    //   console.log("reviews response", response);
-
-    // })
-    // .catch((error) => {
-    //   console.log("error ->", error);
-    // });
+  const checkboxOnchange = async (value) => {
+    setStatus(value.target.checked);
 
     try {
-      const response = await fetch(`../../api/reviews/${props?.obj?._id}/status`, {
-        method: 'PUT',
+      const response = await fetch(`../../api/reviews/reviews`, {
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ status: value })
+        body: JSON.stringify({
+          status: value.target.checked,
+          id: props?.obj?._id,
+        }),
       });
-  
+
       if (!response.ok) {
         const errorMessage = await response.text();
       }
-  
+
       const updatedReview = await response.json();
-      console.log('Updated Review:', updatedReview);
+      console.log("Updated Review:", updatedReview);
       return updatedReview;
     } catch (error) {
-      console.error('Error updating review status:', error.message);
+      console.error("Error updating review status:", error.message);
       // Handle error appropriately, e.g., show a notification to the user
     }
     // setStatus(value.target.checked);
@@ -131,7 +124,9 @@ const Chatbox = (props) => {
                 checked={status}
                 className="form-checkbox h-5 w-5 bg-green-800"
                 style={{ backgroundColor: "#4CAF50" }}
-                onChange={(e) =>  checkboxOnchange(e)}
+                onChange={(e) =>
+                  props?.obj?.status == "pending" && checkboxOnchange(e)
+                }
               />
               <span className="m-2 text-gray-700 rounded-lg">Completed</span>
             </label>
