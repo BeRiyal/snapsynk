@@ -24,6 +24,7 @@ const MoodBoard = () => {
     error: uploadError,
     responseData: responseDataValue,
   } = useMutation({ url: URL, method: "PUT" });
+
   let [fileDataURL, setFileDataURL] = useState(null); // State to hold the file data URL
 
   useEffect(() => {

@@ -25,7 +25,6 @@ const customSort = (a, b) => {
 
 const Video = (props) => {
   const playerRef = useRef(null);
-  // const playerRef = useRef();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const videoID = searchParams.get("vid");

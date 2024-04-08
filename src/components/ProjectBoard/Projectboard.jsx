@@ -64,7 +64,7 @@ const Projectboard = () => {
         navigate(`../project/MoodBoard/${id}`);
         break;
       case "voiceover":
-        navigate(`../project/VoiceOver/${data.voId}`);
+        navigate(`../project/VoiceOver/?pid=${id}&aid=${data.audioId}`);
         break;
       case "script":
         navigate(`../project/Script/${data.script}`);
