@@ -14,38 +14,30 @@ export const AuthProvider = ({ children }) => {
   );
 
   // Method to log in the user
-  const login = () => {
-    setIsAuthenticated(true);
-  };
-
   // Method to log out the user
-
-  useEffect(() => {
-    console.log(
-      `🚀  ~ file: AuthContext.js:15 ~ AuthProvider ~ isAuthenticated:`,
-      isAuthenticated
-    );
-    // Check if user is authenticated
-    // if (!isAuthenticated) {
-    //   window.location.replace("/Login");
-    // }
-  }, [isAuthenticated]);
 
   // Method to check if user is authenticated
 
   return (
-    <AuthContext.Provider value={{ login }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated }}>
+      {children}
+    </AuthContext.Provider>
   );
 };
 
 // ProtectedRoute component to restrict access to authenticated users
-// export const ProtectedRoute = ({ children }) => {
-//   const { isAuthenticated } = useAuth();
+export const ProtectedRoute = ({ children }) => {
+  const { isAuthenticated } = useAuth();
 
-//   if (!isAuthenticated()) {
-//     // Redirect to login page or display unauthorized message
-//     return <UnauthorizedPage />;
-//   }
+  useEffect(() => {
+    // Check if user is authenticated
+    if (!isAuthenticated) {
+      //   window.location.replace("/Login");
+      //   window.location.replace("/Login");
+    } else {
+      window.history.back();
+    }
+  }, []);
 
-//   return children;
-// };
+  return children;
+};

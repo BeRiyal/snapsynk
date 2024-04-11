@@ -18,7 +18,7 @@ import Video from "./components/Video/Video.jsx";
 import reportWebVitals from "./reportWebVitals";
 import Sedules from "./components/Sedules/Sedules.jsx";
 import AudioPlayer from "./components/Audio/AudioPlayer.jsx";
-import { AuthProvider } from "./AuthContext.js";
+import { AuthProvider, ProtectedRoute } from "./AuthContext.js";
 import App from "./App.js";
 import RouteIndex from "./route.js";
 const root = ReactDOM.createRoot(document.getElementById("root"));

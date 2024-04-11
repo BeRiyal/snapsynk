@@ -1,7 +1,8 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Toast from "../Toast";
+import Loader from "../Loader";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -90,6 +91,21 @@ const Login = () => {
         });
     }
   };
+
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    if (localStorage.getItem("isSession")) {
+      window.location.replace("/");
+    }
+
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }, []);
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <div className="flex justify-center items-center h-screen">
