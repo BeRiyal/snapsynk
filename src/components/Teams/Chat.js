@@ -1,8 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { CSVLink } from "react-csv";
 import avatar from "../../Assets/avatar.jpeg";
+import Editor from "../../Assets/Editor.png";
+import Admin from "../../Assets/Admin.png";
+import Client from "../../Assets/Client.png";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import Loader from "../Loader";
 
 const Chat = () => {
   const [inputMessage, setInputMessage] = useState("");
@@ -23,7 +27,6 @@ const Chat = () => {
     },
   ]);
 
-  console.log("tjis is messages", messages)
   const [recallApi, setRecallApi] = useState();
 
   let { id } = useParams();
@@ -66,7 +69,7 @@ const Chat = () => {
       .post("../../api/chats/AddMessages", newMessage)
       .then((response) => {
         console.log("Chat post response data", response);
-        setRecallApi(Math.floor(Math.random() * 1000))
+        setRecallApi(Math.floor(Math.random() * 1000));
         // Assuming the response contains the newly added message data
         // setMessages((prevMessages) => [...prevMessages, response.data]);
       })
@@ -131,6 +134,21 @@ const Chat = () => {
     setShowScrollButton(false);
   };
 
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    if (!localStorage.getItem("isSession")) {
+      window.location.replace("/Login");
+    }
+
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }, []);
+
+  if (loading) {
+    return <Loader />;
+  }
+
   return (
     <div className="bg-gray-100  flex flex-col">
       <div className="bg-white p-4 flex justify-between items-center shadow-md w-full ">
@@ -158,21 +176,23 @@ const Chat = () => {
           return (
             <div
               key={index}
-              className={`rounded-lg my-2 ${message?.UserId?._id !== localStorage.getItem("UserId")
-                ? "bg-blue-100"
-                : message?.UserId.userType === "Editor"
+              className={`rounded-lg my-2 ${
+                message?.UserId?._id !== localStorage.getItem("UserId")
+                  ? "bg-blue-100"
+                  : message?.UserId.userType === "Editor"
                   ? "bg-gray-200"
                   : message?.UserId.userType === "Admin"
-                    ? "bg-green-200"
-                    : "bg-gray-300"
-                } p-2 max-w-xs break-words ${message?.UserId?._id === localStorage.getItem("UserId")
+                  ? "bg-green-200"
+                  : "bg-gray-300"
+              } p-2 max-w-xs break-words ${
+                message?.UserId?._id === localStorage.getItem("UserId")
                   ? "text-right"
                   : "text-left"
-                }mb-2 ${message?.UserId?._id === localStorage.getItem("UserId")
+              }mb-2 ${
+                message?.UserId?._id === localStorage.getItem("UserId")
                   ? "ml-auto"
                   : "mr-auto"
-                }`}
-
+              }`}
             >
               <div
                 className={
@@ -182,18 +202,32 @@ const Chat = () => {
                     : "")
                 }
               >
-                <div
-
-                >
+                <div>
                   <p className="font-semibold">{message.Text}</p>
-
-
                 </div>
                 <div className="flex center flex-col">
-
-                  <img className="rounded-full  m-2 h-[45px]" style={{ objectFit: "contain" }} src={avatar} />
+                  {message?.UserId?.Type === "Editor" && (
+                    <img
+                      className="rounded-full  m-2 h-[45px]"
+                      style={{ objectFit: "contain" }}
+                      src={Editor}
+                    />
+                  )}
+                  {message?.UserId?.Type === "Client" && (
+                    <img
+                      className="rounded-full  m-2 h-[45px]"
+                      style={{ objectFit: "contain" }}
+                      src={Client}
+                    />
+                  )}
+                  {message?.UserId?.Type === "Admin" && (
+                    <img
+                      className="rounded-full  m-2 h-[45px]"
+                      style={{ objectFit: "contain" }}
+                      src={Admin}
+                    />
+                  )}
                   <span>
-
                     <span className="ml-2">{message?.UserId?.Name}</span>
                     <span className="ml-2">{message?.UserId?.Type}</span>
                     <span className="ml-2 text-gray-500 text-xs">
@@ -203,7 +237,7 @@ const Chat = () => {
                 </div>
               </div>
             </div>
-          )
+          );
         })}
         <div ref={chatEndRef}></div>
       </div>

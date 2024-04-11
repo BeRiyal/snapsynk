@@ -4,6 +4,7 @@ import avatar from "../../Assets/avatar.jpeg";
 import useMutation from "../../hooks/useMutation";
 import { useLocation, useParams } from "react-router-dom";
 import axios from "axios";
+import Loader from "../Loader";
 
 const MoodBoard = () => {
   let { id } = useParams();
@@ -145,6 +146,21 @@ const MoodBoard = () => {
     alert(`Color code "${color}" copied to clipboard!`);
   };
 
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    if (!localStorage.getItem("isSession")) {
+      window.location.replace("/Login");
+    }
+
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }, []);
+
+  if (loading) {
+    return <Loader />;
+  }
+
   return (
     <div className="flex flex-col h-screen">
       <div className="flex-auto text-white flex">
@@ -194,213 +210,199 @@ const MoodBoard = () => {
           </div>
         </div>
         <div className="w-full flex-row">
-
-        <div className="p-4 flex flex-col ">
-          <h1 className="text-2xl w-full text-black font-bold p-2 ">Images</h1>
-        </div>
-        <div className="flex flex-row justify-between">
-
-        <div className="flex items-center justify-center">
-          {selectedFile ? (
-            <div>
-              <img
-                src={fileDataURL}
-                alt="Uploaded"
-                className="w-[250px]"
-              />
-              <div className="flex mt-4">
-                <button
-                  onClick={discardFile}
-                  className="bg-red-500 text-white py-2 px-4 rounded-md mr-2"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 inline-block mr-1"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
+          <div className="p-4 flex flex-col ">
+            <h1 className="text-2xl w-full text-black font-bold p-2 ">
+              Images
+            </h1>
+          </div>
+          <div className="flex flex-row justify-between">
+            <div className="flex items-center justify-center">
+              {selectedFile ? (
+                <div>
+                  <img src={fileDataURL} alt="Uploaded" className="w-[250px]" />
+                  <div className="flex mt-4">
+                    <button
+                      onClick={discardFile}
+                      className="bg-red-500 text-white py-2 px-4 rounded-md mr-2"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6 inline-block mr-1"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                      Discard
+                    </button>
+                    <button
+                      onClick={handleFileUpload}
+                      className="bg-green-500 text-white py-2 px-4 rounded-md"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6 inline-block mr-1"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M9 2a1 1 0 011 1v7h6a1 1 0 110 2h-6v7a1 1 0 01-2 0v-7H4a1 1 0 110-2h6V3a1 1 0 011-1z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      Upload
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="relative inline-block">
+                  <label
+                    htmlFor="file-upload-1"
+                    className="cursor-pointer text-black py-2 px-4 rounded-md bg-gray-200 hover:bg-gray-300"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                  Discard
-                </button>
-                <button
-                  onClick={handleFileUpload}
-                  className="bg-green-500 text-white py-2 px-4 rounded-md"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 inline-block mr-1"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
+                    <span className="mr-2">+</span> Add Photo
+                  </label>
+                  <input
+                    id="file-upload-1"
+                    type="file"
+                    className="hidden"
+                    onChange={uploadFile}
+                  />
+                </div>
+              )}
+            </div>
+            <div className="flex items-center justify-center">
+              {selectedFile ? (
+                <div>
+                  <img src={fileDataURL} alt="Uploaded" className="w-[250px]" />
+                  <div className="flex mt-4">
+                    <button
+                      onClick={discardFile}
+                      className="bg-red-500 text-white py-2 px-4 rounded-md mr-2"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6 inline-block mr-1"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                      Discard
+                    </button>
+                    <button
+                      onClick={handleFileUpload}
+                      className="bg-green-500 text-white py-2 px-4 rounded-md"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6 inline-block mr-1"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M9 2a1 1 0 011 1v7h6a1 1 0 110 2h-6v7a1 1 0 01-2 0v-7H4a1 1 0 110-2h6V3a1 1 0 011-1z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      Upload
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="relative inline-block">
+                  <label
+                    htmlFor="file-upload-2"
+                    className="cursor-pointer text-black py-2 px-4 rounded-md bg-gray-200 hover:bg-gray-300"
                   >
-                    <path
-                      fillRule="evenodd"
-                      d="M9 2a1 1 0 011 1v7h6a1 1 0 110 2h-6v7a1 1 0 01-2 0v-7H4a1 1 0 110-2h6V3a1 1 0 011-1z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  Upload
-                </button>
-              </div>
+                    <span className="mr-2">+</span> Add Photo
+                  </label>
+                  <input
+                    id="file-upload-2"
+                    type="file"
+                    className="hidden"
+                    onChange={uploadFile}
+                  />
+                </div>
+              )}
             </div>
-          ) : (
-            <div className="relative inline-block">
-              <label
-                htmlFor="file-upload-1"
-                className="cursor-pointer text-black py-2 px-4 rounded-md bg-gray-200 hover:bg-gray-300"
-              >
-                <span className="mr-2">+</span> Add Photo
-              </label>
-              <input
-                id="file-upload-1"
-                type="file"
-                className="hidden"
-                onChange={uploadFile}
-              />
-            </div>
-          )}
-        </div>
-        <div className="flex items-center justify-center">
-          {selectedFile ? (
-            <div>
-              <img
-                src={fileDataURL}
-                alt="Uploaded"
-                className="w-[250px]"
-              />
-              <div className="flex mt-4">
-                <button
-                  onClick={discardFile}
-                  className="bg-red-500 text-white py-2 px-4 rounded-md mr-2"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 inline-block mr-1"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
+            <div className="flex items-center justify-center">
+              {selectedFile ? (
+                <div>
+                  <img src={fileDataURL} alt="Uploaded" className="w-[250px]" />
+                  <div className="flex mt-4">
+                    <button
+                      onClick={discardFile}
+                      className="bg-red-500 text-white py-2 px-4 rounded-md mr-2"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6 inline-block mr-1"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                      Discard
+                    </button>
+                    <button
+                      onClick={handleFileUpload}
+                      className="bg-green-500 text-white py-2 px-4 rounded-md"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6 inline-block mr-1"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M9 2a1 1 0 011 1v7h6a1 1 0 110 2h-6v7a1 1 0 01-2 0v-7H4a1 1 0 110-2h6V3a1 1 0 011-1z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      Upload
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="relative inline-block">
+                  <label
+                    htmlFor="file-upload-3"
+                    className="cursor-pointer text-black py-2 px-4 rounded-md bg-gray-200 hover:bg-gray-300"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                  Discard
-                </button>
-                <button
-                  onClick={handleFileUpload}
-                  className="bg-green-500 text-white py-2 px-4 rounded-md"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 inline-block mr-1"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M9 2a1 1 0 011 1v7h6a1 1 0 110 2h-6v7a1 1 0 01-2 0v-7H4a1 1 0 110-2h6V3a1 1 0 011-1z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  Upload
-                </button>
-              </div>
+                    <span className="mr-2">+</span> Add Photo
+                  </label>
+                  <input
+                    id="file-upload-3"
+                    type="file"
+                    className="hidden"
+                    onChange={uploadFile}
+                  />
+                </div>
+              )}
             </div>
-          ) : (
-            <div className="relative inline-block">
-              <label
-                htmlFor="file-upload-2"
-                className="cursor-pointer text-black py-2 px-4 rounded-md bg-gray-200 hover:bg-gray-300"
-              >
-                <span className="mr-2">+</span> Add Photo
-              </label>
-              <input
-                id="file-upload-2"
-                type="file"
-                className="hidden"
-                onChange={uploadFile}
-              />
-            </div>
-          )}
-        </div>
-        <div className="flex items-center justify-center">
-          {selectedFile ? (
-            <div>
-              <img
-                src={fileDataURL}
-                alt="Uploaded"
-                className="w-[250px]"
-              />
-              <div className="flex mt-4">
-                <button
-                  onClick={discardFile}
-                  className="bg-red-500 text-white py-2 px-4 rounded-md mr-2"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 inline-block mr-1"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                  Discard
-                </button>
-                <button
-                  onClick={handleFileUpload}
-                  className="bg-green-500 text-white py-2 px-4 rounded-md"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 inline-block mr-1"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M9 2a1 1 0 011 1v7h6a1 1 0 110 2h-6v7a1 1 0 01-2 0v-7H4a1 1 0 110-2h6V3a1 1 0 011-1z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  Upload
-                </button>
-              </div>
-            </div>
-          ) : (
-            <div className="relative inline-block">
-              <label
-                htmlFor="file-upload-3"
-                className="cursor-pointer text-black py-2 px-4 rounded-md bg-gray-200 hover:bg-gray-300"
-              >
-                <span className="mr-2">+</span> Add Photo
-              </label>
-              <input
-                id="file-upload-3"
-                type="file"
-                className="hidden"
-                onChange={uploadFile}
-              />
-            </div>
-          )}
-        </div>
-
-        </div>
-
+          </div>
         </div>
       </div>
     </div>

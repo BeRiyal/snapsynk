@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import Loader from "../Loader";
 
 const ContactForm = () => {
   const [organizationSize, setOrganizationSize] = useState("");
@@ -6,6 +7,20 @@ const ContactForm = () => {
   const handleOrganizationSizeChange = (e) => {
     setOrganizationSize(e.target.value);
   };
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    if (!localStorage.getItem("isSession")) {
+      window.location.replace("/Login");
+    }
+
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }, []);
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">

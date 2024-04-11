@@ -17,6 +17,7 @@ import scrpit from "../../Assets/svg/script.svg";
 import sedules from "../../Assets/svg/sedules.svg";
 import teams from "../../Assets/svg/teams.svg";
 import docs from "../../Assets/svg/docs.svg";
+import Loader from "../Loader";
 
 const Projectboard = () => {
   if (!localStorage.getItem("isSession")) {
@@ -85,8 +86,6 @@ const Projectboard = () => {
   }
 
   useEffect(() => {
-    console.log("Project id", id);
-
     if (!id) {
       navigate("/home");
     } else {
@@ -116,6 +115,21 @@ const Projectboard = () => {
   const closeModal = () => {
     setIsModalOpen(false);
   };
+
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    if (!localStorage.getItem("isSession")) {
+      window.location.replace("/Login");
+    }
+
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }, []);
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <>

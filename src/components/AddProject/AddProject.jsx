@@ -2,12 +2,11 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Loader from "../Loader";
+import { useEffect } from "react";
 
 const AddProject = () => {
   const navigate = useNavigate();
-  // if(localStorage.getItem("UserType")!=="Leader"){
-  //   navigate("Contact");
-  // }
+
   const [suggestions, setSuggestions] = useState({});
 
   // Function to handle suggestion selection
@@ -24,7 +23,7 @@ const AddProject = () => {
   };
 
   //___states for Session,Error,Loading START
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   //___states for Session,Error,Loading END
 
@@ -101,6 +100,16 @@ const AddProject = () => {
         setLoading(false);
       });
   };
+
+  useEffect(() => {
+    if (localStorage?.getItem("UserType") !== "Admin") {
+      window.location.replace("Contact");
+    }
+
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }, []);
 
   if (loading) {
     return <Loader />;

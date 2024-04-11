@@ -186,6 +186,16 @@ const Video = (props) => {
     );
   }
 
+  useEffect(() => {
+    if (!localStorage.getItem("isSession")) {
+      window.location.replace("/Login");
+    }
+  }, []);
+
+  if (loading) {
+    return <Loader />;
+  }
+
   if (loading) return <Loader />;
 
   return (
